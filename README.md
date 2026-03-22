@@ -8,4 +8,4 @@ Este repositorio contiene todos los trabajos practicos y laboratorios de la mate
 
 - Krede Julian
 - Piñera Nicolas
-- Puchtea Noguera Juana
+- Pucheta Noguera Juana
