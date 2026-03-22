@@ -92,6 +92,12 @@ A continuacion se realiza la comparativa de rendimiento para compilar el kernel 
 > Cual de ellos hace un uso mas eficiente de los nucleos que tiene
 > Cual es mas eficiente en terminos de costo (dividir el tiempo que se demora por el costo y el tiempo por la cantida de procesadores) costo energetico y monetario
 
+### Analisis de rendimiento de Codigo - Profiling
+
+El profiling es una tecnica de analisis que mide el tiempo de ejecucion o el uso de memoria/recursos mientras de ejecuta, ademas nos permite ver cuanto tiempo tarda en ejecutarse cada funcion o metodo.
+
+> Realizar Analisis en funcion de la herramienta gprof
+
 ---
 
 ## Conclusiones
