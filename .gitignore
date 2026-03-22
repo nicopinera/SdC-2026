@@ -6,3 +6,5 @@
 .vscode/ipch
 test_gprof
 gmon.out
+perf.data
+perf.data.old
