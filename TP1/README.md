@@ -60,7 +60,7 @@ Utilizando la siguiente formula de Speedup se puede obtener los siguientes resul
 
 $$ Speedup = \frac{RedimientoMejorado}{RednimientoOriginal} = \frac{EX_{Original}}{EX_{Mejorado}} $$
 
-Siendo $EX$ el tiempo de ejecucion de la CPU.
+Siendo $EX$ el tiempo de ejecución de la CPU.
 
 | Frecuencia (MHz) | Tiempo Enteros (s) | Tiempo Floats (s) | Speedup (vs la base) |
 | ---------------- | ------------------ | ----------------- | -------------------- |
@@ -71,19 +71,19 @@ En función de estos resultados, se observa que el tiempo de ejecución se ha re
 
 ### Benchmark para tareas diarias
 
-En funcion de lo visto en clases, sabemos que un benchmark son programas de prueba que se utilizan para medir el rendimiendo del hardware en situaciones especificas. En funcion de esto y lo analizado con el grupo se eligieron los siguientes benchmarks mas utiles para nosotros y que nos sirven para analizar el rendimiento:
+En función de lo visto en clases, sabemos que un benchmark son programas de prueba que se utilizan para medir el redimiendo del hardware en situaciones especificas. En función de esto y lo analizado con el grupo se eligieron los siguientes benchmarks mas útiles para nosotros y que nos sirven para analizar el rendimiento:
 
 | Tarea                   | Benchmark                                                                                                                                |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Jugar                   | **3DMark Time Spy** ( Rendimiento grafico) y algunos video juegos traen un benchmark integrado para probar el rendimiento del procesador |
-| Ofimatica               | **PCMark 10** para trabajo con office y **Benchmarks de Navegador** para web                                                             |
-| Programacion            | **Timed Linux Kernel Compilation**                                                                                                       |
+| Jugar                   | **3DMark Time Spy** ( Rendimiento gráfico) y algunos video juegos traen un benchmark integrado para probar el rendimiento del procesador |
+| Ofimática               | **PCMark 10** para trabajo con office y **Benchmarks de Navegador** para web                                                             |
+| Programación            | **Timed Linux Kernel Compilation**                                                                                                       |
 | Simulación de Circuitos | **Phoronix Test Suite**, utiliza Ngspice para simular circuitos                                                                          |
 | Compilación de Firmware | **CoreMark**                                                                                                                             |
 
 ### Comparativa de Procesadores
 
-A continuacion se realiza la comparativa de rendimiento para **compilar el kernel de linux** para los siguientes procesadores:
+A continuación se realiza la comparativa de rendimiento para **compilar el kernel de linux** para los siguientes procesadores:
 
 - **Intel Core i5-13600K**: Sera nuestra base para comparar. Posee 14 cores y 20 thread con una frecuencia de 5.1 GHz.
 - **AMD Ryzen 9 5900X 12-Core**: 12 cores y 24 threads a 3.7 GHz
@@ -95,27 +95,27 @@ A continuacion se realiza la comparativa de rendimiento para **compilar el kerne
 | AMD Ryzen 9 5900X    | 97                              |
 | AMD Ryzen 9 7950X    | 52                              |
 
-Vemos que el procesador mas rapido es el Ryzen 9 7950X y el mas lento es el AMD Ryzen 9 5900X. Lo sorprendente es que el Intel es mas rapido que el Ryzen 9 5900X, siendo este ultimo una gama relativamente nueva en comparacion con el Intel.
+Vemos que el procesador mas rapido es el Ryzen 9 7950X y el mas lento es el AMD Ryzen 9 5900X. Lo sorprendente es que el Intel es mas rapido que el Ryzen 9 5900X, siendo este ultimo una gama relativamente nueva en comparación con el Intel.
 
-En funcion de esta informacion calcularemos el rendimiento de cada uno con la siguiente formula: $Rendimiento = \frac{1}{EX_{CPU}}$ recordando que $EX_{CPU}$ es el tiempo de ejecucion del CPU, en este caso, para compilar el kernel de linux.
+En función de esta información calcularemos el rendimiento de cada uno con la siguiente formula: $Rendimiento = \frac{1}{EX_{CPU}}$ recordando que $EX_{CPU}$ es el tiempo de ejecución del CPU, en este caso, para compilar el kernel de Linux.
 
-Luego, en funcion de la cantidad de nucleos que tiene el procesador, se calculara el rendimineto por nucleo utilizando la siguiente ecuacion $R_{nucleo} = \frac{Speedup}{N_{nucleos}}$
+Luego, en función de la cantidad de núcleos que tiene el procesador, se calculara el rendimiento por núcleo utilizando la siguiente ecuación $R_{nucleo} = \frac{Speedup}{N_{nucleos}}$
 
-| Procesador           | Numero de nucleos | Rendimiento | Speedup | Speedup % | Eficiencia por nucleo |
+| Procesador           | Numero de núcleos | Rendimiento | Speedup | Speedup % | Eficiencia por núcleo |
 | -------------------- | ----------------- | ----------- | ------- | --------- | --------------------- |
 | Intel Core i5-13600K | 14                | 0.012       | 1       | 100%      | 0.07143 - 7.14%       |
 | AMD Ryzen 9 5900X    | 12                | 0.0103      | 0.855   | 85.56%    | 0.0713 - 7.13%        |
 | AMD Ryzen 9 7950X    | 16                | 0.019       | 1.595   | 159.5%    | 0.0974 - 9.974%       |
 
-Vemos que el **rendimiento** es inversamente proporcional al tiempo de ejecucion de esa tarea especifica, ademas es una medida absoluta de su capacidad. Si dividimos el rendimiento por el numero de nucleos obtenemos la _capacidad absoluta por nucleo_, es un numero decimal muy pequeño y dificil de analisar.
+Vemos que el **rendimiento** es inversamente proporcional al tiempo de ejecución de esa tarea especifica, ademas es una medida absoluta de su capacidad. Si dividimos el rendimiento por el numero de núcleos obtenemos la _capacidad absoluta por núcleo_, es un numero decimal muy pequeño y difícil de analizar.
 
-Para realizar un mejor analisis del rendimiento es utilizar el **Speedup** o aceleracion que es una medida relativa de la mejora. Se toma como base el primer procesador, por eso su speedup es de 1 (o 100%). Al dividir este valor por la cantidad de recursos se obtiene la **Eficiencia**, que nos marca que porcentaje del potencial teorico de cada recurso, en este caso nucleos, se esta aprovechando realmente en comparacion con una base de referencia.
+Para realizar un mejor análisis del rendimiento es utilizar el **Speedup** o aceleración que es una medida relativa de la mejora. Se toma como base el primer procesador, por eso su speedup es de 1 (o 100%). Al dividir este valor por la cantidad de recursos se obtiene la **Eficiencia**, que nos marca que porcentaje del potencial teórico de cada recurso, en este caso núcleos, se esta aprovechando realmente en comparación con una base de referencia.
 
-En el uso de los procesadores o nucleos, el Intel es nuestra base de referencia. El procesador ganador es el Ryzen 9 7950X ya que no solo es mas rapido por tener mas nucleos, sino que su arqutectura aprovecha mejor cada unidad de procesamiento disponible en comparacion de los otros dos.
+En el uso de los procesadores o núcleos, el Intel es nuestra base de referencia. El procesador ganador es el Ryzen 9 7950X ya que no solo es mas rapido por tener mas núcleos, sino que su arquitectura aprovecha mejor cada unidad de procesamiento disponible en comparación de los otros dos.
 
-Para obtener un analisis extra, veremos el rendimiento por dolar y el rendimiento por vatio, dividiendo el rendimiento del procesador por el precio y el rendimiento por el consumo en vatios.
+Para obtener un análisis extra, veremos el rendimiento por dolar y el rendimiento por vatio, dividiendo el rendimiento del procesador por el precio y el rendimiento por el consumo en vatios.
 
-| Procesador           | Numero de nucleos | Rendimiento | Precio [Dolar] | Consumo [W] | Rendimiento por Dolar | Rendimiento por W |
+| Procesador           | Numero de núcleos | Rendimiento | Precio [Dolar] | Consumo [W] | Rendimiento por Dolar | Rendimiento por W |
 | -------------------- | ----------------- | ----------- | -------------- | ----------- | --------------------- | ----------------- |
 | Intel Core i5-13600K | 14                | 0.012       | 319            | 125         | 3.76e-5               | 9.6e-5            |
 | AMD Ryzen 9 5900X    | 12                | 0.0103      | 255            | 105         | 4.039e-5              | 9.8e-5            |
@@ -125,11 +125,11 @@ Al comparar los procesadores usando la métrica de rendimiento por dólar (defin
 
 Por otro lado, al comparar los procesadores utilizando la métrica de rendimiento por vatio (rendimiento dividido por el consumo de potencia), el AMD Ryzen 9 7950X presenta el mayor valor, lo que indica que es el más eficiente desde el punto de vista energético.
 
-### Analisis de rendimiento de Codigo - Profiling
+### Analisis de rendimiento de código - Profiling
 
 El profiling es una técnica de análisis que mide el comportamiento de un programa durante su ejecución, recolectando métricas como tiempo de ejecución, uso de memoria y otros recursos. Además, permite descomponer ese comportamiento para identificar cuánto tiempo o recursos consume cada función o método.
 
-> Realizar Analisis en funcion de la herramienta gprof
+> Realizar Analisis en función de la herramienta gprof
 
 ## Analisis utilizando Perf
 
@@ -152,10 +152,10 @@ Observando más en detalle las instrucciones de las funciones:
 [Resultado func1](https://github.com/user-attachments/assets/17ef95fa-8cc6-46b6-9582-7795ccf8ee9a)
 
 #### Instrucciones ejecutadas en `new_func1`:
-[Resultado func1](https://github.com/user-attachments/assets/d7e8f1f1-3a33-41f3-8e37-9db1bf7e8d51)
+[Resultado new_func1](https://github.com/user-attachments/assets/d7e8f1f1-3a33-41f3-8e37-9db1bf7e8d51)
 
 #### Instrucciones ejecutadas en `func2`:
-[Resultado func1](https://github.com/user-attachments/assets/1c39629f-98a4-4850-8636-9fe9fec81042)
+[Resultado func2](https://github.com/user-attachments/assets/1c39629f-98a4-4850-8636-9fe9fec81042)
 
 
 Las tres funciones tienen el mismo patrón fundamental un loop con dependencia fuerte en el contador.
