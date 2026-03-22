@@ -57,7 +57,7 @@ Prueba flotantes finalizada en: 8257 ms
 
 Utilizando la siguiente formula de Speedup se puede obtener los siguientes resultados:
 
-$$ Speedup = \frac{RedimientoMejorado}{RednimientoOriginal} = \frac{EX_{Original}}{EX_{Mejorado}} $$
+$$ Speedup = \frac{RedimientoMejorado}{RednimientoOriginal} = \frac{EX*{Original}}{EX*{Mejorado}} $$
 
 Siendo $EX$ el tiempo de ejecucion de la CPU.
 
@@ -67,6 +67,18 @@ Siendo $EX$ el tiempo de ejecucion de la CPU.
 | 160              | 6.9                | 8.2               | 2.033                |
 
 En función de estos resultados, se observa que el tiempo de ejecución se ha reducido 2.033 veces en ambos casos. El tiempo es una medida real del rendimiento: si el tiempo disminuye al aumentar la frecuencia, el rendimiento aumenta. Además, se nota que el procesador no tiene el mismo rendimiento (a la misma frecuencia) para operaciones de números enteros que para flotantes; esto se debe a que las operaciones de punto flotante suelen tener un CPI (Ciclos por Instrucción) más alto, ya que requieren más microinstrucciones para completarse.
+
+### Benchmark para tareas diarias
+
+En funcion de lo visto en clases, sabemos que un benchmark son programas de prueba que se utilizan para medir el rendimiendo del hardware en situaciones especificas. En funcion de esto y lo analizado con el grupo se eligieron los siguientes benchmarks mas utiles para nosotros y que nos sirven para analizar el rendimiento:
+
+| Tarea                   | Benchmark                                                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Jugar                   | **3DMark Time Spy** ( Rendimiento grafico) y algunos video juegos traen un benchmark integrado para probar el rendimiento del procesador |
+| Ofimatica               | **PCMark 10** para trabajo con office y **Benchmarks de Navegador** para web                                                             |
+| Programacion            | **Timed Linux Kernel Compilation**                                                                                                       |
+| Simulación de Circuitos | **Phoronix Test Suite**, utiliza Ngspice para simular circuitos                                                                          |
+| Compilación de Firmware | **CoreMark**                                                                                                                             |
 
 ---
 
