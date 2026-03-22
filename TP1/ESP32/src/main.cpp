@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 void ejecutar_suma_enteros() {
-    long iteraciones = 10000000;
+    long iteraciones = 100000000;
     unsigned long tiempoInicio = millis();
 
     volatile int suma = 0;
@@ -14,7 +14,7 @@ void ejecutar_suma_enteros() {
 }
 
 void ejecutar_suma_float() {
-    long iteraciones = 10000000;
+    long iteraciones = 100000000;
     unsigned long tiempoInicio = millis();
 
     volatile float suma = 0.0;
