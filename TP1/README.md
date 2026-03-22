@@ -55,6 +55,12 @@ Prueba Enteros finalizada en: 6987 ms
 Prueba flotantes finalizada en: 8257 ms
 ```
 
+Utilizando la siguiente formula de Speedup se puede obtener los siguientes resultados:
+
+$$ Speedup = \frac{RedimientoMejorado}{RednimientoOriginal} = \frac{EX_{Original}}{EX_{Mejorado}} $$
+
+Siendo $EX$ el tiempo de ejecucion de la CPU.
+
 | Frecuencia (MHz) | Tiempo Enteros (s) | Tiempo Floats (s) | Speedup (vs la base) |
 | ---------------- | ------------------ | ----------------- | -------------------- |
 | 80               | 14.2               | 16.7              | 1                    |
