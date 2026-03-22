@@ -4,7 +4,7 @@
 
 - Nicolas Piñera
 - Julian Krede
-- Juana Pucheta
+- Juana Pucheta Noguera
 
 **Nombre del grupo**: Bare metal guys
 
@@ -27,6 +27,7 @@
 - **Información de contacto**:
   - [nicolas.pinera@mi.unc.edu.ar](mailto:nicolas.pinera@mi.unc.edu.ar)
   - [julian.krede@mi.unc.edu.ar](mailto:julian.krede@mi.unc.edu.ar)
+  - [juana.pucheta.noguera@mi.unc.edu.ar](mailto:juana.pucheta.noguera@mi.unc.edu.ar)
 
 ---
 
