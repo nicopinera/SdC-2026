@@ -113,23 +113,58 @@ Para realizar un mejor analisis del rendimiento es utilizar el **Speedup** o ace
 
 En el uso de los procesadores o nucleos, el Intel es nuestra base de referencia. El procesador ganador es el Ryzen 9 7950X ya que no solo es mas rapido por tener mas nucleos, sino que su arqutectura aprovecha mejor cada unidad de procesamiento disponible en comparacion de los otros dos.
 
-Para obtener un analisis extra, veremos el rendimiento por dolar y el rendimiento por watts, dividiendo el rendimiento del procesador por el precio y el rendimiento por el consumo en watts.
+Para obtener un analisis extra, veremos el rendimiento por dolar y el rendimiento por vatio, dividiendo el rendimiento del procesador por el precio y el rendimiento por el consumo en vatios.
 
 | Procesador           | Numero de nucleos | Rendimiento | Precio [Dolar] | Consumo [W] | Rendimiento por Dolar | Rendimiento por W |
 | -------------------- | ----------------- | ----------- | -------------- | ----------- | --------------------- | ----------------- |
 | Intel Core i5-13600K | 14                | 0.012       | 319            | 125         | 3.76e-5               | 9.6e-5            |
 | AMD Ryzen 9 5900X    | 12                | 0.0103      | 255            | 105         | 4.039e-5              | 9.8e-5            |
-| AMD Ryzen 9 7950X    | 16                | 0.019       | 699            | 170         | 2.75e-5               | 0.000113          |
+| AMD Ryzen 9 7950X    | 16                | 0.019       | 699            | 170         | 2.75e-5               | 11.3e-5           |
 
-> Cuanto tiempo demoran cada uno
-> Cual de ellos hace un uso mas eficiente de los nucleos que tiene
-> Cual es mas eficiente en terminos de costo (dividir el tiempo que se demora por el costo y el tiempo por la cantida de procesadores) costo energetico y monetario
+Al comparar los procesadores usando la métrica de rendimiento por dólar (definida como el rendimiento dividido por el costo), se observa que el AMD Ryzen 9 5900X presenta el valor más alto. Esto implica que es el que ofrece mayor rendimiento por unidad de costo, por lo que resulta ser la mejor opción según esta métrica.
+
+Por otro lado, al comparar los procesadores utilizando la métrica de rendimiento por vatio (rendimiento dividido por el consumo de potencia), el AMD Ryzen 9 7950X presenta el mayor valor, lo que indica que es el más eficiente desde el punto de vista energético.
 
 ### Analisis de rendimiento de Codigo - Profiling
 
-El profiling es una tecnica de analisis que mide el tiempo de ejecucion o el uso de memoria/recursos mientras de ejecuta, ademas nos permite ver cuanto tiempo tarda en ejecutarse cada funcion o metodo.
+El profiling es una técnica de análisis que mide el comportamiento de un programa durante su ejecución, recolectando métricas como tiempo de ejecución, uso de memoria y otros recursos. Además, permite descomponer ese comportamiento para identificar cuánto tiempo o recursos consume cada función o método.
 
 > Realizar Analisis en funcion de la herramienta gprof
+
+## Analisis utilizando Perf
+
+perf es una herramienta de profiling de Linux basada en muestreo, que utiliza contadores de hardware del CPU para estimar en qué partes del código se consume el tiempo de ejecución. Este enfoque introduce menor overhead, a costa de ser menos preciso que el profiling por instrumentación.
+
+Al ejecutar Perf se obtiene la siguiente salida:
+
+![Resultado perf](https://github.com/user-attachments/assets/1df76a72-d41c-4c58-be23-ae7becdcb162)
+
+Esto indica que **aproximadamente** del total de tiempo de ejecución:
+
+- La función `func2` se ejecuta el 33.79% del tiempo
+- La función `new_func1` se ejecuta el 33.63% del tiempo
+- La función `func1` se ejecuta el 31.79% del tiempo
+- La función main se ejecuta el 0.13% del tiempo
+
+Observando más en detalle las instrucciones de las funciones:
+
+#### Instrucciones ejecutadas en `func1`:
+[Resultado func1](https://github.com/user-attachments/assets/17ef95fa-8cc6-46b6-9582-7795ccf8ee9a)
+
+#### Instrucciones ejecutadas en `new_func1`:
+[Resultado func1](https://github.com/user-attachments/assets/d7e8f1f1-3a33-41f3-8e37-9db1bf7e8d51)
+
+#### Instrucciones ejecutadas en `func2`:
+[Resultado func1](https://github.com/user-attachments/assets/1c39629f-98a4-4850-8636-9fe9fec81042)
+
+
+Las tres funciones tienen el mismo patrón fundamental un loop con dependencia fuerte en el contador.
+
+Diferencias:
+- `func1`: Usa memoria directamente en `cmp`
+- `func2` y `new_func1`: Usan un registro intermedio
+
+Pero estas diferencias no cambia significativamente el costo total, porque el problema real es la dependencia secuencial del loop.
 
 ---
 
@@ -137,3 +172,4 @@ El profiling es una tecnica de analisis que mide el tiempo de ejecucion o el uso
 
 - [GPROF y Perf](https://docs.google.com/document/d/1lj3KkO_GthTn3WyfkUsLMWJvGdXblKGyIsxCLVGQOZg/edit?tab=t.0)
 - [Tiempo para compilar el Kernel de linux](https://openbenchmarking.org/test/pts/build-linux-kernel&eval=a94fc255324a86f95ba5207758d45b3e012d6e50#metrics)
+- [Perf](https://dev.to/etcwilde/perf---perfect-profiling-of-cc-on-linux-of)
