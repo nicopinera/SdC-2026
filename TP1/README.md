@@ -57,7 +57,7 @@ Prueba flotantes finalizada en: 8257 ms
 
 Utilizando la siguiente formula de Speedup se puede obtener los siguientes resultados:
 
-$$ Speedup = \frac{RedimientoMejorado}{RednimientoOriginal} = \frac{EX*{Original}}{EX*{Mejorado}} $$
+$$ Speedup = \frac{RedimientoMejorado}{RednimientoOriginal} = \frac{EX_{Original}}{EX_{Mejorado}} $$
 
 Siendo $EX$ el tiempo de ejecucion de la CPU.
 
