@@ -80,6 +80,18 @@ En funcion de lo visto en clases, sabemos que un benchmark son programas de prue
 | Simulación de Circuitos | **Phoronix Test Suite**, utiliza Ngspice para simular circuitos                                                                          |
 | Compilación de Firmware | **CoreMark**                                                                                                                             |
 
+### Comparativa de Procesadores
+
+A continuacion se realiza la comparativa de rendimiento para compilar el kernel de linux para los siguientes procesadores:
+
+- Intel Core i5-13600K (Sera nuestra base para comparar)
+- AMD Ryzen 9 5900X 12-Core
+- AMD Ryzen 9 7950X 16-Core
+
+> Cuanto tiempo demoran cada uno
+> Cual de ellos hace un uso mas eficiente de los nucleos que tiene
+> Cual es mas eficiente en terminos de costo (dividir el tiempo que se demora por el costo y el tiempo por la cantida de procesadores) costo energetico y monetario
+
 ---
 
 ## Conclusiones
