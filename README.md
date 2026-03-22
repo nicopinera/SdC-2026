@@ -2,9 +2,10 @@
 
 Este repositorio contiene todos los trabajos practicos y laboratorios de la materia **Sistema de computadoras**
 
-## Grupo _Nombre de Grupo_
+## Grupo _Bare Metal Guys_
 
 ### Integrantes
 
 - Krede Julian
 - Piñera Nicolas
+- Puchtea Noguera Juana
