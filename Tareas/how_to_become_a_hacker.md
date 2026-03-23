@@ -12,8 +12,7 @@ Para adoptar esta actitud, es necesario integrar cinco pilares fundamentales:
 4. **Rechazo al autoritarismo y la opacidad:** Se desarrolla una hostilidad instintiva hacia la censura, el secreto y el uso de la fuerza o el engaño para coaccionar, actuando de forma consecuente para defender la libertad de información.
 5. **Dedicación y competencia:** Convertirse en hacker requiere inteligencia, práctica, dedicación y un esfuerzo constante. La competencia sana actúa como un motor para la mejora continua.
 
-> [!NOTE]
-> Respecto al pilar sobre **el aburrimiento y la monotonía**, difiero ligeramente. Considero que, inicialmente, los procesos repetitivos pueden ser útiles para comprender a fondo el dominio de un problema. Automatizar sin conocer todos los matices del procedimiento puede derivar en errores graves; por lo tanto, la automatización debería ser el paso final tras dominar la tarea manualmente.
+Respecto al pilar sobre **el aburrimiento y la monotonía**. Consideramos que, inicialmente, los procesos repetitivos pueden ser útiles para comprender a fondo el dominio de un problema. Automatizar sin conocer todos los matices del procedimiento puede derivar en errores u omisiones graves, por lo tanto, **la automatización debe ser el paso final tras dominar la tarea manualmente**.
 
 ## Adoptar la actitud hacker en la industria actual
 
