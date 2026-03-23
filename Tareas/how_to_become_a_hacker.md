@@ -24,7 +24,7 @@ En el contexto de la industria tecnológica actual, adoptar y defender la **acti
 El principio fundamental de que "ningún problema debería resolverse dos veces" implica que el tiempo de los cerebros creativos es el recurso más valioso y limitado de la industria. Defender esta actitud supone:
 
 - **Rechazo a las barreras artificiales:** Oponerse a obstáculos técnicos, legales o institucionales (como el código cerrado o el excesivo celo de propiedad intelectual) que obligan a las personas a resolver problemas que ya han sido superados por otros.
-- **Deber moral de compartir:** Considerar un deber **moral** compartir soluciones y documentación para que la comunidad técnica pueda enfocarse en desafíos nuevos en lugar de reinventar soluciones existentes.
+- **Deber moral de compartir:** Considerar un deber **moral** compartir soluciones y documentación para que la comunidad técnica pueda enfocarse en desafíos nuevos y en soluciones superadoras a problemas contemporaneos.
 
 ### 2. La automatización como imperativo ético
 
