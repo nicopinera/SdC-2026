@@ -160,7 +160,7 @@ perf es una herramienta de profiling de Linux basada en muestreo, que utiliza co
 
 Al ejecutar Perf se obtiene la siguiente salida:
 
-![Resultado perf](https://github.com/user-attachments/assets/1df76a72-d41c-4c58-be23-ae7becdcb162)
+[Resultado perf](https://github.com/user-attachments/assets/1df76a72-d41c-4c58-be23-ae7becdcb162)
 
 Esto indica que **aproximadamente** del total de tiempo de ejecución:
 
