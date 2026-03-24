@@ -34,12 +34,22 @@
 ## Resumen
 
 **Palabras clave**:
-
----
+Rendimiento de CPU, Speedup, Eficiencia, Profiling, gprof, perf, ESP32, Optimización de Código.
 
 ## Introducción
 
----
+El presente trabajo práctico tiene como objetivo el estudio y análisis del rendimiento (performance) en sistemas de computación, abordando tanto plataformas embebidas como procesadores de propósito general. 
+El rendimiento no es una métrica unidimensional; depende de una compleja interacción entre la frecuencia del reloj, la arquitectura del set de instrucciones (ISA), la eficiencia del compilador y la naturaleza de la carga de trabajo.
+
+A lo largo del informe, se exploran tres ejes fundamentales:
+
+Análisis de Hardware Embebido: Se evalúa el impacto de la frecuencia de reloj en una plataforma ESP32, cuantificando la mejora mediante la métrica de Speedup y diferenciando el costo computacional entre operaciones de enteros y punto flotante.
+
+Benchmarking y Comparativa de Mercado: Se analizan procesadores de consumo masivo (Intel Core i5 vs. AMD Ryzen 9) bajo cargas de trabajo reales (compilación del Kernel de Linux), introduciendo métricas críticas para la toma de decisiones como el rendimiento por vatio (eficiencia energética) y el rendimiento por dólar (costo-beneficio).
+
+Análisis Dinámico de Software (Profiling): Se profundiza en el uso de herramientas de diagnóstico como gprof (instrumentación) y perf (muestreo) para identificar "cuellos de botella" en el código fuente, permitiendo una optimización basada en datos reales de ejecución.
+
+Mediante este enfoque integral, se busca comprender cómo los recursos de hardware son utilizados por el software y cómo las limitaciones físicas del procesador condicionan el tiempo de ejecución final de una tarea.
 
 ## Resultados
 
@@ -129,7 +139,16 @@ Por otro lado, al comparar los procesadores utilizando la métrica de rendimient
 
 El profiling es una técnica de análisis que mide el comportamiento de un programa durante su ejecución, recolectando métricas como tiempo de ejecución, uso de memoria y otros recursos. Además, permite descomponer ese comportamiento para identificar cuánto tiempo o recursos consume cada función o método.
 
-> Realizar Analisis en función de la herramienta gprof
+Al ejecutar gprof se obtiene la siguiente salida: 
+
+![Resultado gprof](/TP1/data/analisis.txt)
+
+En el archivo generado se distinguen dos principales secciones: 
+
+- Flat Profile que evidencia el tiempo total usado en cada función en forma individual. Particularmente en nuestro caso las funciones func2, func1 y new_func1 se reparten casi equitativamente el tiempo de ejecución (aproximadamente 33% cada una), tardando unos 10 segundos cada una. Esto indica que el programa tiene una carga de trabajo distribuida simétricamente entre ellas.
+
+- Call Graph que muestra la jerarquía de quien llama a quien. Podemos observar que main llama a func1 y func2 y a su vez, func1 es quien llama a new_func1. Esto explica por qué en el "Call Graph", func1 aparece con un tiempo total del 65.6% (su tiempo propio más el de a quien llamó, new_func1).
+
 
 ## Analisis utilizando Perf
 
