@@ -146,7 +146,7 @@ En el archivo generado se distinguen dos principales secciones:
 
 - **Call Graph**: Muestra la jerarquía de quién llama a quién. Podemos observar que `main` llama a `func1` y `func2` y, a su vez, `func1` es quien llama a `new_func1`. Esto explica por qué en el "Call Graph", `func1` aparece con un tiempo total del 65.6% (su tiempo propio más el de a quien llamó, `new_func1`).
 
-## Análisis utilizando Perf
+#### Análisis utilizando Perf
 
 `perf` es una herramienta de profiling de Linux basada en muestreo, que utiliza contadores de hardware del CPU para estimar en qué partes del código se consume el tiempo de ejecución. Este enfoque introduce menor overhead, a costa de ser menos preciso que el profiling por instrumentación.
 
