@@ -141,7 +141,7 @@ El profiling es una técnica de análisis que mide el comportamiento de un progr
 
 Al ejecutar gprof se obtiene la siguiente salida: 
 
-![Resultado gprof](/TP1/data/analisis.txt)
+[Resultado gprof](/TP1/data/analisis.txt)
 
 En el archivo generado se distinguen dos principales secciones: 
 
@@ -168,13 +168,13 @@ Esto indica que **aproximadamente** del total de tiempo de ejecución:
 Observando más en detalle las instrucciones de las funciones:
 
 #### Instrucciones ejecutadas en `func1`:
-[Resultado func1](https://github.com/user-attachments/assets/17ef95fa-8cc6-46b6-9582-7795ccf8ee9a)
+![Resultado func1](https://github.com/user-attachments/assets/17ef95fa-8cc6-46b6-9582-7795ccf8ee9a)
 
 #### Instrucciones ejecutadas en `new_func1`:
-[Resultado new_func1](https://github.com/user-attachments/assets/d7e8f1f1-3a33-41f3-8e37-9db1bf7e8d51)
+![Resultado new_func1](https://github.com/user-attachments/assets/d7e8f1f1-3a33-41f3-8e37-9db1bf7e8d51)
 
 #### Instrucciones ejecutadas en `func2`:
-[Resultado func2](https://github.com/user-attachments/assets/1c39629f-98a4-4850-8636-9fe9fec81042)
+![Resultado func2](https://github.com/user-attachments/assets/1c39629f-98a4-4850-8636-9fe9fec81042)
 
 
 Las tres funciones tienen el mismo patrón fundamental un loop con dependencia fuerte en el contador.
