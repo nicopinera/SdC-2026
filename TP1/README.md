@@ -149,9 +149,9 @@ Al ejecutar gprof se obtiene la salida volcada en el siguiente archivo:
 
 En el archivo generado se distinguen dos principales secciones: 
 
-- Flat Profile que evidencia el tiempo total usado en cada función en forma individual. Particularmente en nuestro caso las funciones func2, func1 y new_func1 se reparten casi equitativamente el tiempo de ejecución (aproximadamente 33% cada una), tardando unos 10 segundos cada una. Esto indica que el programa tiene una carga de trabajo distribuida simétricamente entre ellas.
+- Flat Profile que evidencia el tiempo total usado en cada función en forma individual. Particularmente en nuestro caso las funciones `func2`, `func1` y `new_func1` se reparten casi equitativamente el tiempo de ejecución (aproximadamente 33% cada una), tardando unos 10 segundos cada una. Esto indica que el programa tiene una carga de trabajo distribuida simétricamente entre ellas.
 
-- Call Graph que muestra la jerarquía de quien llama a quien. Podemos observar que main llama a func1 y func2 y a su vez, func1 es quien llama a new_func1. Esto explica por qué en el "Call Graph", func1 aparece con un tiempo total del 65.6% (su tiempo propio más el de a quien llamó, new_func1).
+- Call Graph que muestra la jerarquía de quien llama a quien. Podemos observar que main llama a `func1` y `func2` y a su vez, `func1` es quien llama a `new_func1`. Esto explica por qué en el "Call Graph", `func1` aparece con un tiempo total del 65.6% (su tiempo propio más el de a quien llamó, `new_func1`).
 
 
 #### Analisis utilizando Perf
@@ -160,7 +160,7 @@ perf es una herramienta de profiling de Linux basada en muestreo, que utiliza co
 
 Al ejecutar Perf se obtiene la siguiente salida:
 
-[Resultado perf](https://github.com/user-attachments/assets/1df76a72-d41c-4c58-be23-ae7becdcb162)
+![Resultado perf](https://github.com/user-attachments/assets/1df76a72-d41c-4c58-be23-ae7becdcb162)
 
 Esto indica que **aproximadamente** del total de tiempo de ejecución:
 
