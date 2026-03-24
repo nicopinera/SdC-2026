@@ -139,7 +139,11 @@ Por otro lado, al comparar los procesadores utilizando la métrica de rendimient
 
 El profiling es una técnica de análisis que mide el comportamiento de un programa durante su ejecución, recolectando métricas como tiempo de ejecución, uso de memoria y otros recursos. Además, permite descomponer ese comportamiento para identificar cuánto tiempo o recursos consume cada función o método.
 
-Al ejecutar gprof se obtiene la siguiente salida: 
+#### Analisis utilizando gprof
+
+gprof es una herramienta de profiling para programas C/C++ que funciona por instrumentación: al compilar con el flag `-pg`, el compilador inserta código extra en cada función para registrar cuántas veces fue llamada y cuánto tiempo consumió. Al ejecutar el programa, se genera un archivo `gmon.out` que gprof analiza para producir un reporte con el call graph y el flat profile. Este enfoque ofrece datos exactos de conteo de llamadas, a costa de mayor overhead en tiempo de ejecución y la necesidad de recompilar el binario.
+
+Al ejecutar gprof se obtiene la salida volcada en el siguiente archivo: 
 
 [Resultado gprof](/TP1/data/analisis.txt)
 
@@ -150,7 +154,7 @@ En el archivo generado se distinguen dos principales secciones:
 - Call Graph que muestra la jerarquía de quien llama a quien. Podemos observar que main llama a func1 y func2 y a su vez, func1 es quien llama a new_func1. Esto explica por qué en el "Call Graph", func1 aparece con un tiempo total del 65.6% (su tiempo propio más el de a quien llamó, new_func1).
 
 
-## Analisis utilizando Perf
+#### Analisis utilizando Perf
 
 perf es una herramienta de profiling de Linux basada en muestreo, que utiliza contadores de hardware del CPU para estimar en qué partes del código se consume el tiempo de ejecución. Este enfoque introduce menor overhead, a costa de ser menos preciso que el profiling por instrumentación.
 
