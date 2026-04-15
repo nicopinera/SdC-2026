@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-int main(){
-    printf("Hola mundo");
-    return 0;
+void procesar_datos(){
+    printf("Pasando datos de C a ASM...");
 }
