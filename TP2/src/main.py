@@ -1,7 +1,10 @@
 import requests,csv
 
+def main():
+    pass
+
 # Link API Banco mundial
-url_banco_mundial = "https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI?format=json&date=2011:2020&per_page=32500&page=1&country=%22Argentina%22"
+url_banco_mundial = ""
 resultado = requests.get(url=url_banco_mundial) # Se genera la peticion GET
 pais_buscado = "Argentina"
 
@@ -34,3 +37,6 @@ with open('datos_gini.csv','w',newline='') as f:
 
 print("---"*10)
 print("Fin de programa")
+
+if __name__ == "__main__":
+    main()
