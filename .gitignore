@@ -8,3 +8,4 @@ test_gprof
 gmon.out
 perf.data
 perf.data.old
+.env
