@@ -1,5 +1,6 @@
 import requests,os,ctypes
 from dotenv import load_dotenv
+import matplotlib.pyplot as plt
 
 actual = os.path.abspath(__file__) # Ruta actual del script
 carpeta = os.path.dirname(actual) # Carpeta actual
@@ -58,7 +59,27 @@ def generar_txt(pais,anios,valores):
 def c_y_asm(valores):
     ruta_lib = os.path.join(RUTA_BASE,"libpython.so")
     lib = ctypes.CDLL(ruta_lib)
+    lib.procesar_datos.argtypes = [ctypes.c_float]
+    lib.procesar_datos.restype = ctypes.c_int
+
+    datos_casteados = []
+
+    for i in valores:
+        r = lib.procesar_datos(ctypes.c_float(i))
+        datos_casteados.append(r)
     
+    return datos_casteados
+
+def generar_grafico(pais,anio,valores):
+    plt.plot(anio,valores)
+    # plt.bar(anio,height=valores)
+    plt.title(f'Indice GINI - {pais}')
+    plt.xlabel('Año')
+    plt.xticks(rotation=45, ha='right')
+    plt.xticks(fontsize=12)
+    plt.ylabel('Valor GINI')
+    plt.grid(True)
+    plt.show()
 
 def main():
     """
@@ -74,8 +95,14 @@ def main():
         print("Error al obtener informacion")
 
     anios, valores = obtener_datos_pais(informacion,pais)
+    anios.reverse()
+    valores.reverse()
     
     generar_txt(pais,anios,valores)
+
+    datos_finales = c_y_asm(valores)
+
+    generar_grafico(pais=pais,anio=anios,valores=datos_finales)
 
 
 
