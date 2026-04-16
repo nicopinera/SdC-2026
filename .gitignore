@@ -9,3 +9,6 @@ gmon.out
 perf.data
 perf.data.old
 .env
+
+*.o
+*.so
