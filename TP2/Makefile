@@ -8,3 +8,9 @@ compilar:
 	@gcc -fPIC -c src/libpython.c -o libpython.o
 	@gcc -shared func_asm.o libpython.o -o libpython.so
 	@echo "Programa compilado"
+
+compilar_prog_c:
+	@echo "Compilando programa en c puro"
+	@gcc src/main.c -g -O0 -o parser_gini
+	@echo "Programa compilado"
+
