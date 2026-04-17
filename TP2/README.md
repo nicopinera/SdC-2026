@@ -17,7 +17,7 @@
 - Javier Alejandro Jorge
 - Miguel Ángel Solinas
 
-**Fecha:** 02/04/2026
+**Fecha:** 21/04/2026
 
 ---
 
@@ -93,6 +93,48 @@ resultado = lib.suma(10, 25)
 
 print(resultado)  # 35
 ```
+
+### Analisis de código en C con gdb
+
+Para realizar un análisis del funcionamiento del stack frame implementamos una programa en C que lee los datos recogidos por el programa en python (a través de un archivo `.txt`) y los imprime por pantalla, dentro de este programa implementamos una función que se encarga de realizar el casteo del valor en flotante a entero y sumarle 1. Para analizar la ejecución del programa utilizamos gdb dashboard:
+
+![interfaz gdb dashboard](img/inicio.png)
+
+Como se puede observar en la parte superior tenemos las instrucciones correspondientes en ensamblador a de la instrucción en C actual, ademas se puede observar el código en C correspondiente en el apartado *Source* y el estado actual de los registros en el apartado *Registers*. Ademas:
+
+- En *Source* La línea en verde es la próxima linea en C a ejecutar (lo que GDB llama current execution line). Es a donde apunta el RIP en ese momento. 
+- A su vez en la parte superior se remarca con verde las instrucciones en ensamblador a la que corresponde dicha linea de C. 
+- Los registros en verde indican valores que cambiaron respecto de la instrucción anterior.
+
+Para avanzar en gdb hay 3 comandos útiles:
+
+`step` (`s`): Avanza a la siguiente línea de código fuente, entrando en funciones si corresponde.
+`next` (`n`): Avanza a la siguiente línea de código fuente sin entrar en funciones.
+`stepi` (`si`): Avanza una instrucción de ensamblador.
+
+Avanzando hasta la parte que nos interesa que es la llamada a una función, en nuestro caso `castear_datos`:
+
+![Antes de entrar a la función](img/antes_de_entrar.png)
+
+Como se puede observar antes de entrar a la función, se mueve el valor del parametro (que esta almacenado como variable local de la función main) al registro `xmm0`, siguiendo la convención System V AMD64 ABI, posteriormente entra a la función mediante la instrucción `call` indicando la dirección en memoria de la función `castear_datos`.
+
+![Dentro de la función](img/adentro.png)
+
+Al entrar en la función vemos el prologo de la función, guarda el `rbp` de la función anterior (`main`) en el stack y luego carga el valor del `rbp` de la función actual copiando el valor del stack pointer (`rsp`), de esta manera se establece un nuevo stack frame.
+
+![Guardado de ebp actual](img/guardado_rbp.png)
+
+Luego se ve cómo se almacena el valor del parámetro x, que fue pasado en el registro xmm0, dentro del stack frame de la función actual mediante la instrucción `movss`, esto no es estrictamente necesario desde el punto de vista funcional, ya que el valor ya se encuentra disponible en un registro, pero en compilaciones sin optimización (`-O0`).
+
+Después de haber guardado `x` en el stack, se carga nuevamente el valor en `xmm0`, esto es redundante, sucede porque el compilador fuerza el uso de memoria para mantener consistencia con el modelo de variables.
+
+Luego se trunca el valor almacenado en `xmm0` y se almacena en `eax`, esto se hace mediante la instrucción `cvttss2si` y luego se le suma 1 mediante la instrucción `add`. Se almacena el valor y luego es guardado en el `eax`, ya que en este registro se almacena el valor de retorno.
+
+Posteriormente se ejecuta el epilogo de la función que consiste en recuperar el valor de `rbp` almacenado anteriormente, esto se realiza mediante la instrucción `pop` y finalmente se retorna de la función con `ret`
+
+![Retorno de la función](img/retorno.png)
+
+
 ---
 
 
