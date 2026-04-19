@@ -136,7 +136,7 @@ El profiling es una técnica de análisis que mide el comportamiento de un progr
 
 gprof es una herramienta de profiling para programas C/C++ que funciona por instrumentación: al compilar con el flag `-pg`, el compilador inserta código extra en cada función para registrar cuántas veces fue llamada y cuánto tiempo consumió. Al ejecutar el programa, se genera un archivo `gmon.out` que gprof analiza para producir un reporte con el call graph y el flat profile. Este enfoque ofrece datos exactos de conteo de llamadas, a costa de mayor overhead en tiempo de ejecución y la necesidad de recompilar el binario.
 
-Al ejecutar gprof se obtiene la salida volcada en el siguiente archivo: 
+Al ejecutar gprof se obtiene la salida volcada en el siguiente archivo:
 
 [Resultado gprof](/TP1/data/analisis.txt)
 
