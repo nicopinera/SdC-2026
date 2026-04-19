@@ -109,7 +109,7 @@ for i in valores:
 
 Para realizar un análisis del funcionamiento del stack frame implementamos una programa en C que lee los datos recogidos por el programa en python (a través de un archivo `.txt`) y los imprime por pantalla, dentro de este programa implementamos una función que se encarga de realizar el casteo del valor en flotante a entero y sumarle 1. Para analizar la ejecución del programa utilizamos gdb dashboard:
 
-![interfaz gdb dashboard](img/inicio.png)
+![interfaz gdb dashboard](https://github.com/user-attachments/assets/7f23b7ab-42fd-4bbd-9ebf-80c0544ec043)
 
 Como se puede observar en la parte superior tenemos las instrucciones correspondientes en ensamblador a de la instrucción en C actual, ademas se puede observar el código en C correspondiente en el apartado *Source* y el estado actual de los registros en el apartado *Registers*. Ademas:
 
@@ -125,15 +125,15 @@ Para avanzar en gdb hay 3 comandos útiles:
 
 Avanzando hasta la parte que nos interesa que es la llamada a una función, en nuestro caso `castear_datos`:
 
-![Antes de entrar a la función](img/antes_de_entrar.png)
+![Antes de entrar a la función](https://github.com/user-attachments/assets/7f23b7ab-42fd-4bbd-9ebf-80c0544ec043)
 
 Como se puede observar antes de entrar a la función, se mueve el valor del parametro (que esta almacenado como variable local de la función main) al registro `xmm0`, siguiendo la convención System V AMD64 ABI, posteriormente entra a la función mediante la instrucción `call` indicando la dirección en memoria de la función `castear_datos`.
 
-![Dentro de la función](img/adentro.png)
+![Dentro de la función](https://github.com/user-attachments/assets/deca00e1-2338-4393-aef4-1fb6c165ccd9)
 
 Al entrar en la función vemos el prologo de la función, guarda el `rbp` de la función anterior (`main`) en el stack y luego carga el valor del `rbp` de la función actual copiando el valor del stack pointer (`rsp`), de esta manera se establece un nuevo stack frame.
 
-![Guardado de ebp actual](img/guardado_rbp.png)
+![Guardado de ebp actual](https://github.com/user-attachments/assets/5af0f1d2-aa79-4445-bb40-e5350daeb2d2)
 
 Luego se ve cómo se almacena el valor del parámetro x, que fue pasado en el registro xmm0, dentro del stack frame de la función actual mediante la instrucción `movss`, esto no es estrictamente necesario desde el punto de vista funcional, ya que el valor ya se encuentra disponible en un registro, pero en compilaciones sin optimización (`-O0`).
 
@@ -143,8 +143,10 @@ Luego se trunca el valor almacenado en `xmm0` y se almacena en `eax`, esto se ha
 
 Posteriormente se ejecuta el epilogo de la función que consiste en recuperar el valor de `rbp` almacenado anteriormente, esto se realiza mediante la instrucción `pop` y finalmente se retorna de la función con `ret`
 
-![Retorno de la función](img/retorno.png)
+![Retorno de la función](https://github.com/user-attachments/assets/d922215c-0d84-4a0c-b058-1a5928c49781)
 
 ---
 
 ## Referencias
+
+- [System V ABI](https://wiki.osdev.org/System_V_ABI)
