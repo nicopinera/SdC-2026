@@ -1,36 +1,110 @@
-import requests,csv
+import requests,os,ctypes
+from dotenv import load_dotenv
+import matplotlib.pyplot as plt
 
-# Link API Banco mundial
-url_banco_mundial = "https://api.worldbank.org/v2/en/country/all/indicator/SI.POV.GINI?format=json&date=2011:2020&per_page=32500&page=1&country=%22Argentina%22"
-resultado = requests.get(url=url_banco_mundial) # Se genera la peticion GET
-pais_buscado = "Argentina"
+actual = os.path.abspath(__file__) # Ruta actual del script
+carpeta = os.path.dirname(actual) # Carpeta actual
+RUTA_BASE = os.path.dirname(carpeta) # Carpeta TP2
+RUTA_ENV = os.path.join(RUTA_BASE,".env") # Archivo .env
+RUTA_DATA = os.path.join(RUTA_BASE,"data")
 
-print("---"*10)
-if resultado:
-    print("Se obtuno resultado con metodo GET")
-else:
-    print("Error al obtener informacion")
 
-print("Status Code: ", resultado.status_code)
-print("---"*10)
-print(f"Procesando datos de API para {pais_buscado.upper()}")
+def cargar_env():
+    """
+    Funcion que carga las variables de entorno y devuelve
+    el url del banco mundial junto con el pais a analizar
+    """
+    load_dotenv(RUTA_ENV) # Carga de variables de entorno dentro del .env
+    return os.getenv('URL_BANCO_MUNDIAL'),os.getenv('PAIS') # Devolvemos la url del api
 
-# Se convierte los datos a JSON
-data = resultado.json()
-registros = data[1] # Utilizamos el segund item que tiene los datos
+def realizar_peticion_banco_mundial(url):
+    """
+    Realiza la peticion HTTP GET
+    """
+    resultado = requests.get(url)
+    if not resultado:
+        print("Error al realizar en HTTP GET")
+        return None
+    
+    if resultado.status_code != 200:
+        print(f"Fallo en peticion GET, status_code = {resultado.status_code}")
+        return None
 
-# Abrimos el csv
-with open('datos_gini.csv','w',newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(['anio', 'valor']) # Encabezados
+    datos = resultado.json()
+    return datos[1]
 
-    for item in registros:
-        anio = item['date']
-        valor = item['value']
-        pais = item["country"]["value"]
-        if pais == pais_buscado and valor is not None:
-            print(f"Año {anio} : {valor}")
-            writer.writerow([anio,valor])
+def obtener_datos_pais(datos,pais):
+    """
+    Obtiene los años y valores del indice GINI de un pais especifico
 
-print("---"*10)
-print("Fin de programa")
+    Devuelve dos array: anios y valores
+    """
+    anios = []
+    valores = []
+    for item in datos:
+        anio = item['date'] # string
+        valor = item['value'] # float
+        pais_aux = item["country"]["value"]
+        if pais_aux == pais and valor is not None:
+            anios.append(anio)
+            valores.append(valor)
+    return anios,valores
+
+def generar_txt(pais,anios,valores):
+    txt = os.path.join(RUTA_DATA,f"{pais}.txt")
+    with open(txt,"w") as f:
+        for a,v in zip(anios,valores):
+            f.write(f"{a} - {v}\n")
+
+def c_y_asm(valores):
+    ruta_lib = os.path.join(RUTA_BASE,"libpython.so")
+    lib = ctypes.CDLL(ruta_lib)
+    lib.procesar_datos.argtypes = [ctypes.c_float]
+    lib.procesar_datos.restype = ctypes.c_int
+
+    datos_casteados = []
+
+    for i in valores:
+        r = lib.procesar_datos(ctypes.c_float(i))
+        datos_casteados.append(r)
+    
+    return datos_casteados
+
+def generar_grafico(pais,anio,valores):
+    plt.plot(anio,valores)
+    # plt.bar(anio,height=valores)
+    plt.title(f'Indice GINI - {pais}')
+    plt.xlabel('Año')
+    plt.xticks(rotation=45, ha='right')
+    plt.xticks(fontsize=12)
+    plt.ylabel('Valor GINI')
+    plt.grid(True)
+    plt.show()
+
+def main():
+    """
+    Funcion principal
+    """
+
+    # Obtenemos las variables de entorno
+    url_banco_mundial,pais = cargar_env()
+
+    # Obtenemos la informacion por HTTP GET
+    informacion = realizar_peticion_banco_mundial(url=url_banco_mundial)
+    if not informacion:
+        print("Error al obtener informacion")
+
+    anios, valores = obtener_datos_pais(informacion,pais)
+    anios.reverse()
+    valores.reverse()
+    
+    generar_txt(pais,anios,valores)
+
+    datos_finales = c_y_asm(valores)
+
+    generar_grafico(pais=pais,anio=anios,valores=datos_finales)
+
+
+
+if __name__ == "__main__":
+    main()
