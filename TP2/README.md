@@ -32,7 +32,11 @@
 
 ## Introducción
 
-<!-- Aca podría explicarse brevemente que es el indice GINI y que se busca hacer con este tp a grandes rasgos-->
+El índice de Gini es una medida estadística utilizada para cuantificar el grado de desigualdad en la distribución de ingresos o riqueza dentro de una población. Su valor se encuentra en el rango [0,1] o en porcentaje [0%, 100%], donde 0$ representa una distribución perfectamente equitativa (todos los individuos poseen el mismo ingreso) y 100$ indica desigualdad máxima (una sola persona concentra la totalidad de los ingresos). Debido a su capacidad para sintetizar en un único valor la disparidad económica, es ampliamente utilizado en estudios socioeconómicos y por organismos internacionales como el Banco Mundial.
+
+En este trabajo práctico se aborda el procesamiento y análisis del índice de Gini desde una perspectiva computacional, integrando múltiples niveles de abstracción en un mismo sistema. En particular, se desarrolla un programa multilenguaje que combina Python, C y ensamblador, con el objetivo de ilustrar cómo interactúan estos lenguajes en términos de ejecución, manejo de memoria y control del hardware.
+
+A grandes rasgos, el sistema implementado obtiene datos reales del índice de Gini a través de una API externa, los procesa mediante una arquitectura en capas y permite observar tanto el flujo de información como las transformaciones que ocurren en cada nivel. De esta manera, el trabajo no solo tiene un componente aplicado vinculado al análisis de datos, sino que también busca profundizar en conceptos fundamentales de sistemas de computadoras, como el stack frame, las convenciones de llamada y la interoperabilidad entre lenguajes.
 
 ## Desarrollo
 
@@ -102,8 +106,29 @@ for i in valores:
         datos_casteados.append(r)
 
 ```
+#### Convención de llamada System V AMD64 ABI
 
-<!-- Aca podriamos meter una seccion que explique a grandes rasgos la convencion de llamada System V AMD64 ABI  -->
+La convención de llamada System V AMD64 ABI define cómo se realiza la invocación de funciones en sistemas Unix-like sobre arquitecturas x86 de 64 bits.
+
+##### Pasaje de parametros
+
+Los primeros argumentos de una función se pasan mediante registros, lo cual evita accesos innecesarios a memoria y mejora el rendimiento:
+
+- Argumentos enteros o punteros: se pasan en los registros `RDI`, `RSI`, `RDX`, `RCX`, `R8`, `R9` (en ese orden).
+- Argumentos de punto flotante (float, double): se pasan en los registros SIMD `XMM0` a `XMM7`.
+
+Si la cantidad de parámetros excede estos registros, los restantes se pasan por el stack, en orden.
+
+##### Gestión de variables locales
+
+La gestión de variables locales funciona igual a la convención cdecl. Las variables locales son almacenadas en el stack, luego del prologo se reserva lugar en el stack para almacenar las mediante la instrucción: `sub esp, N` donde N es el tamaño total en bytes que tiene que ser múltiplo de 16 bytes.
+
+##### Valor de retorno
+
+El valor de retorno de una función se pasa también mediante registros:
+
+- Tipos enteros o punteros: se devuelven en `RAX`.
+- Tipos de punto flotante: se devuelven en `XMM0`.
 
 ### Analisis de código en C con gdb
 
