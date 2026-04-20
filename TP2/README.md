@@ -56,6 +56,8 @@ En base a esta idea, se diseñó una arquitectura de tres capas:
 
 De esta forma, el programa no solo cumple una función aplicada (procesar y visualizar el índice GINI), sino que también sirve como ejemplo concreto de cómo se articulan distintas capas de abstracción en un sistema real, mostrando el rol específico que cumple cada lenguaje dentro de la arquitectura.
 
+![Gráfico generado por el programa](https://github.com/user-attachments/assets/ce8db0c5-2147-4ace-bddc-a039f79067da)
+
 #### Diferencia entre python y C
 
 Python es un lenguaje cuya ejecución depende de un intérprete. A diferencia de C, el código fuente se traduce primero a un formato intermedio llamado Bytecode y luego es ejecutado por la Máquina Virtual de Python (PVM). Esto implica que el programa no corre de forma autónoma, sino que reside y es gestionado íntegramente dentro del entorno y el espacio de memoria del proceso python3.
