@@ -1,4 +1,4 @@
-# Trabajo práctico 1 - Rendimiento
+# Trabajo práctico 3 - Modo protegido
 
 ## Nombres
 
@@ -17,7 +17,7 @@
 - Javier Alejandro Jorge
 - Miguel Ángel Solinas
 
-**Fecha:** 21/3/2026
+**Fecha:** 27/4/2026
 
 ---
 
