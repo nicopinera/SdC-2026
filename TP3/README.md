@@ -34,7 +34,7 @@
 
 ## Resultados
 
-¿Qué es UEFI? ¿Cómo puedo usarlo? Mencionar además una función a la que podría llamar usando esa dinámica.
+#### ¿Qué es UEFI? ¿Cómo puedo usarlo? Mencionar además una función a la que podría llamar usando esa dinámica.
 
 UEFI (Unified Extensible Firmware Interface), es la interfaz entre el firmware de la placa madre y el sistema operativo; se encarga de inicializar el hardware, gestionar el arranque y ofrecer servicios al SO.
 
@@ -46,7 +46,7 @@ Se podría llamar por ejemplo a la función OuputString. Esta función es uno de
 
 ---
 
-Menciona casos de bugs de UEFI que puedan ser explotados.
+#### Menciona casos de bugs de UEFI que puedan ser explotados.
 
 LogoFAIL (2023): Familia de vulnerabilidades en los parsers de imágenes del firmware UEFI (BMP, PNG, GIF). Durante el arranque UEFI muestra el logo del fabricante, si ese archivo de imagen es reemplazado por uno malicioso, el parser buggeado ejecuta código arbitrario por debajo del sistema operativo, invisible para antivirus.
 
@@ -54,7 +54,7 @@ ThinkPwn / SMM vulnerabilities: Aplicado a Drivers de dispositivos. Bugs en el S
 
 ---
 
-¿Qué es Converged Security and Management Engine (CSME), the Intel Management Engine BIOS Extension (Intel MEBx)?
+#### ¿Qué es Converged Security and Management Engine (CSME), the Intel Management Engine BIOS Extension (Intel MEBx)?
 
 CSME es un subsistema autónomo integrado en los chipsets Intel que funciona de manera completamente independiente al CPU principal. Cuenta con su propio procesador (ARC/x86 de 32 bits), su propia RAM, su propio sistema operativo; y acceso directo a la red, memoria y almacenamiento incluso con el equipo apagado,o mientras haya energía en standby. Lo clave del CSME es su posición en la jerarquía de privilegios: corre por debajo del sistema operativo, debajo del hypervisor y por debajo del SMM. Es el componente con mayor acceso al hardware.
 
@@ -62,7 +62,7 @@ Por otro lado, Intel MEBx (Management Engine BIOS Extension) es la interfaz de c
 
 ---
 
-¿Qué es coreboot? ¿Qué productos lo incorporan? ¿Cuáles son las ventajas de su utilización?
+#### ¿Qué es coreboot? ¿Qué productos lo incorporan? ¿Cuáles son las ventajas de su utilización?
 
 Coreboot es un firmware de código abierto que reemplaza al BIOS/UEFI propietario. Intenta hacer lo mínimo en firmware y delegar el resto a un payload. Es, escencialmente, un núcleo de arranque.
 
