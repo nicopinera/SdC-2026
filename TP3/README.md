@@ -115,7 +115,23 @@ La opción `--oformat binary` en el linker indica que la salida debe ser un bina
 
 ---
 
-Crear un código assembler que pueda pasar a modo protegido (sin macros).
-¿Cómo sería un programa que tenga dos descriptores de memoria diferentes, uno para cada segmento (código y datos) en espacios de memoria diferenciados?
-Cambiar los bits de acceso del segmento de datos para que sea de solo lectura, intentar escribir, ¿Que sucede? ¿Que debería suceder a continuación? (revisar el teórico) Verificarlo con gdb.
-En modo protegido, ¿Con qué valor se cargan los registros de segmento ? ¿Porque?
+> [!NOTE] Faltan estas preguntas
+> Crear un código assembler que pueda pasar a modo protegido (sin macros).
+> ¿Cómo sería un programa que tenga dos descriptores de memoria diferentes, uno para cada segmento (código y datos) en espacios de memoria diferenciados?
+> Cambiar los bits de acceso del segmento de datos para que sea de solo lectura, intentar escribir, ¿Que sucede? ¿Que debería suceder a continuación? (revisar el teórico) Verificarlo con gdb.
+
+### Modo protegido y registro de segmentos
+
+En el **Modo Protegido**, los registros de segmento _(CS, DS, SS, ES, FS, GS)_ ya no contienen una dirección base de memoria física (como ocurría en el Modo Real). En su lugar, se cargan con un valor denominado **Selector de Segmento**. Un **Selector de Segmento** es un valor de 16 bits con la siguiente estructura interna:
+
+- **Índice**: Selecciona una entrada específica dentro de una tabla de descriptores.
+- **TI**: Indica si se debe buscar en la Tabla Global de Descriptores (GDT) o en la Local (LDT).
+- **RPL**: Define el nivel de privilegio (Ring 0 a Ring 3) con el que se intenta acceder.
+
+El cambio de "dirección" a "selector" responde a la necesidad de implementar seguridad y virtualización de la memoria. Las razones técnicas principales son:
+
+1. **Indirección y Control de Acceso**: En **Modo Real**, cualquier programa podía escribir en cualquier dirección de memoria simplemente cambiando el registro de segmento. En **Modo Protegido**, el registro de segmento apunta a una entrada en la GDT (Global Descriptor Table). Esta entrada (el Descriptor de Segmento) contiene: La **Dirección Base real**, El **Límite** (tamaño máximo del segmento) y Los **Derechos de Acceso** (si es de solo lectura, ejecutable, etc.). La CPU verifica estos permisos antes de permitir el acceso a la RAM. Si el programa intenta escribir en un segmento marcado como "solo lectura", la CPU genera una **excepción** de protección general.
+
+2. **Separación de Memoria Lógica y Física**: El uso de selectores permite que el Sistema Operativo mueva datos en la RAM física sin que el programa se de cuenta. El programa sigue usando el mismo "Selector", pero el Sistema Operativo actualiza la dirección base en la tabla GDT. Esto es la base de la relocalización dinámica.
+
+3. **Implementación de los Anillos de Privilegio (Protection Rings)**: El valor cargado en el registro de segmento incluye el RPL. Esto permite a la CPU comparar el privilegio del código que se intenta ejecutar con el privilegio del segmento al que intenta acceder, impidiendo que una aplicación de usuario (Ring 3) acceda directamente a la memoria del núcleo o del firmware UEFI (Ring 0).
