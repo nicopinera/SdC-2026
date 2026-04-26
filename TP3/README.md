@@ -34,98 +34,88 @@
 
 ## Resultados
 
-#### ¿Qué es UEFI? ¿Cómo puedo usarlo? Mencionar además una función a la que podría llamar usando esa dinámica.
+### Qué es UEFI y Cómo puedo usarlo
 
-UEFI (Unified Extensible Firmware Interface), es la interfaz entre el firmware de la placa madre y el sistema operativo; se encarga de inicializar el hardware, gestionar el arranque y ofrecer servicios al SO.
+**UEFI** (Unified Extensible Firmware Interface), es una capa de software de bajo nivel que reside en un chip dentro de la placa base. Se encarga de inicializar los componentes de hardware (procesador, memoria, almacenamiento), gestionar el arranque y verificar que todo esté en orden antes de entregarle el control al sistema operativo. Es el sucesor directo del antiguo **BIOS**, diseñado para superar las limitaciones de este último y ofrecer un arranque más rápido y seguro.
 
-En el contexto de arranque de modo protegido del CPU que luego "evoluciona", UEFI es quien orquesta esa transición. Lleva el procesador del modo real al modo protegido y luego al long mode 64 bits.
+La interacción con la UEFI se da principalmente de **dos** maneras:
 
-UEFI se puede usar desde el código; cuenta con una tabla llamada EFI_SYSTEM_TABLE, que contiene punteros a funciones que podés llamar desde una aplicación UEFI. Estas funciones permiten acceder a la pantalla, teclado, sistema de archivos, etc., antes de que el sistema operativo esté cargado.
+1. **Acceso al Menú de Configuración**: Para realizar ajustes manuales (como cambiar el orden de arranque o activar la virtualización), se debe acceder a su interfaz antes de que cargue el sistema operativo. Reiniciando la computadora y apretando una tecla especifica que indica la PC en pantalla cuando esta iniciando.
+2. **Servicios de Tiempo de Ejecución (Runtime Services)**: Estos servicios permanecen activos y disponibles en la RAM incluso cuando ya estás usando el Sistema Operativo. Permiten que el sistema operativo y el firmware sigan comunicándose sin reiniciar. Mediante los Runtime Services, el sistema operativo puede leer o escribir en esa libreta en cualquier momento.
 
-Se podría llamar por ejemplo a la función OuputString. Esta función es uno de los Boot Services de UEFI: disponible sólo durante el arranque.
+Cuando una CPU se enciende, comienza en un estado muy básico. La UEFI se encarga de cambiar el procesador de **Modo Real** (un modo limitado de 16 bits) a **Modo Protegido** (32 bits) o **Modo Largo** (64 bits).
 
----
+UEFI se puede usar desde el código; cuenta con una tabla llamada **EFI_SYSTEM_TABLE**, que contiene punteros a funciones que podés llamar desde una aplicación UEFI. Estas funciones permiten acceder a la pantalla, teclado, sistema de archivos, etc., antes de que el sistema operativo esté cargado.Una dinámica común al trabajar con UEFI es la consulta de Variables de Entorno. Una función fundamental a la que un programador o el sistema operativo puede llamar es: **GetVariable**. Esta función permite leer datos almacenados en la memoria no volátil (NVRAM) de la placa base.
 
-#### Menciona casos de bugs de UEFI que puedan ser explotados.
+### Casos de bugs de UEFI que puedan ser explotados
 
-LogoFAIL (2023): Familia de vulnerabilidades en los parsers de imágenes del firmware UEFI (BMP, PNG, GIF). Durante el arranque UEFI muestra el logo del fabricante, si ese archivo de imagen es reemplazado por uno malicioso, el parser buggeado ejecuta código arbitrario por debajo del sistema operativo, invisible para antivirus.
+Debido a que la UEFI reside en una capa inferior al sistema operativo y tiene privilegios totales sobre el hardware, un bug en este nivel es extremadamente peligroso: permite la persistencia de malware incluso si se formatea el disco duro o se reinstala el sistema operativo.
 
-ThinkPwn / SMM vulnerabilities: Aplicado a Drivers de dispositivos. Bugs en el System Management Mode (SMM), un modo de CPU aún más privilegiado que el kernel. Explotar SMM permite escribir en la flash del firmware para lograr persistencia total. Sobrevive a reinstalaciones del OS y al reemplazo del disco.
+**LogoFAIL (2023):** Familia de vulnerabilidades en los parsers de imágenes del firmware UEFI (BMP, PNG, GIF). Durante el arranque UEFI muestra el logo del fabricante, si ese archivo de imagen es reemplazado por uno malicioso, el parser buggeado ejecuta código arbitrario por debajo del sistema operativo, invisible para antivirus.
 
----
+**ThinkPwn / SMM vulnerabilities**: Aplicado a Drivers de dispositivos. Bugs en el System Management Mode (SMM), un modo de CPU aún más privilegiado que el kernel. Explotar SMM permite escribir en la flash del firmware para lograr persistencia total. Sobrevive a reinstalaciones del OS y al reemplazo del disco.
 
-#### ¿Qué es Converged Security and Management Engine (CSME), the Intel Management Engine BIOS Extension (Intel MEBx)?
+### Converged Security and Management Engine (CSME), the Intel Management Engine BIOS Extension (Intel MEBx)
 
-CSME es un subsistema autónomo integrado en los chipsets Intel que funciona de manera completamente independiente al CPU principal. Cuenta con su propio procesador (ARC/x86 de 32 bits), su propia RAM, su propio sistema operativo; y acceso directo a la red, memoria y almacenamiento incluso con el equipo apagado,o mientras haya energía en standby. Lo clave del CSME es su posición en la jerarquía de privilegios: corre por debajo del sistema operativo, debajo del hypervisor y por debajo del SMM. Es el componente con mayor acceso al hardware.
+**CSME** es un subsistema autónomo integrado en los chipsets Intel que funciona de manera completamente independiente al CPU principal. Cuenta con su propio procesador (ARC/x86 de 32 bits), su propia RAM, su propio sistema operativo (basado en MINIX); y acceso directo a la red, memoria y almacenamiento incluso con el equipo apagado, o mientras haya energía en standby. Lo clave del CSME es su posición en la jerarquía de privilegios: corre por debajo del sistema operativo, debajo del hypervisor y por debajo del SMM. Es el componente con mayor acceso al hardware. Se encarga de la autenticación del firmware, la gestión de claves criptográficas y la ejecución de funciones de seguridad que la CPU principal no debe tocar.
 
-Por otro lado, Intel MEBx (Management Engine BIOS Extension) es la interfaz de configuración del CSME. Es una interfaz de texto que aparece durante el POST y permite configurar qué capacidades de AMT están habilitadas, con qué credenciales, y en qué red opera. Es accesible previo a la carga del SO.
+Por otro lado, **Intel MEBx (Management Engine BIOS Extension)** es la interfaz de configuración del CSME. Es una interfaz de texto que aparece durante el POST y permite configurar qué capacidades de AMT están habilitadas, con qué credenciales, y en qué red opera. Es accesible previo a la carga del SO.
 
----
+### Coreboot, productos que lo incorporan y sus ventajas
 
-#### ¿Qué es coreboot? ¿Qué productos lo incorporan? ¿Cuáles son las ventajas de su utilización?
+**Coreboot** (anteriormente conocido como LinuxBIOS) es un proyecto de software de código abierto diseñado para realizar la mínima inicialización de hardware necesaria antes de ceder el control a un software secundario llamado Payload. Intenta hacer lo mínimo en firmware y delegar el resto a un payload. Es, escencialmente, un núcleo de arranque.
 
-Coreboot es un firmware de código abierto que reemplaza al BIOS/UEFI propietario. Intenta hacer lo mínimo en firmware y delegar el resto a un payload. Es, escencialmente, un núcleo de arranque.
-
-Productos que lo incorporan: Google Chromebooks y ChromeOS Flex, System76, Framework Laptop y también servidores de Google.
+- Productos que lo incorporan: Google Chromebooks y ChromeOS Flex, System76, Framework Laptop y también servidores de Google.
 
 Algunas ventajas que presenta su utilización:
 
 1. Al ser código abierto cualquiera puede revisar qué hace exactamente el firmware, con UEFI propietario eso es imposible.
-
 2. Coreboot hace sustancialmente menos cosas que un UEFI completo.
-
 3. Sin el overhead de las fases SEC/PEI/DXE/BDS, coreboot puede entregar el control al SO en 1–3 segundos en lugar de los 20–60 habituales de un UEFI propietario.
 
----
+### El Linker
 
-#### ¿Que es un linker? ¿que función cumple?
+El linker (ld) es la etapa posterior al ensamblado/compilación. Toma uno o más archivos objeto (.o) generados por el compilador y construye un binario final tiene diversas funciones:
 
-El linker (ld) es la etapa posterior al ensamblado/compilación. Toma uno o más archivos objeto (.o) y construye un binario final tiene diversas funciones:
+- **Resolución de símbolos**: Los programas suelen estar divididos en múltiples archivos y dependen de bibliotecas externas. Este proceso es mediante el cual el linker asocia identificadores simbólicos (nombres de funciones, variables, etiquetas) con sus definiciones reales. Si un símbolo es declarado en un módulo y definido en otro, el linker conecta ambas referencias y sustituye el nombre por su dirección o ubicación final.
 
-- Resolución de símbolos: Proceso mediante el cual el linker asocia identificadores simbólicos (nombres de funciones, variables, etiquetas) con sus definiciones reales. Si un símbolo es declarado en un módulo y definido en otro, el linker conecta ambas referencias y sustituye el nombre por su dirección o ubicación final.
+- **Asignación de direcciones**: El linker determina en qué direcciones de memoria se ubicará cada parte del programa. Esto implica asignar rangos de direcciones a secciones como código, datos y pila, respetando restricciones de alineación y convenciones del formato ejecutable o del entorno de ejecución.
 
-- Asignación de direcciones: El linker determina en qué direcciones de memoria se ubicará cada parte del programa. Esto implica asignar rangos de direcciones a secciones como código, datos y pila, respetando restricciones de alineación y convenciones del formato ejecutable o del entorno de ejecución.
+- **Layout del binario**: Se refiere a la organización interna del archivo generado, el orden y disposición de secciones, su tamaño, alineación y offsets dentro del binario. Define cómo se representa el programa como una secuencia de bytes, independientemente de cómo se cargará en memoria.
 
-- Layout del binario: Se refiere a la organización interna del archivo generado: el orden y disposición de secciones, su tamaño, alineación y offsets dentro del binario. Define cómo se representa el programa como una secuencia de bytes, independientemente de cómo se cargará en memoria.
+- **Relocalización**: Mecanismo mediante el cual el linker (en algunos casos el loader) ajusta las referencias a direcciones dentro del código y los datos para que sean correctas según la ubicación final en memoria. Esto permite que el código funcione correctamente incluso si no se conoce su dirección exacta en etapas tempranas de compilación.
 
-- Relocalización: Mecanismo mediante el cual el linker (en algunos casos el loader) ajusta las referencias a direcciones dentro del código y los datos para que sean correctas según la ubicación final en memoria. Esto permite que el código funcione correctamente incluso si no se conoce su dirección exacta en etapas tempranas de compilación.
+La etapa de enlazamiento o linkeo es la ultima del proceso de compilación, produce es un archivo ELF o un binario plano como en nuestro caso.
 
-La etapa de enlazamiento o linkeo es la ultima del proceso de compilación, produce es un archivo ELF o un binario plano como en nuestro caso
+### La dirección `0x7C00` en el script del linker
 
----
+La dirección `0x7C00` corresponde a la dirección física en memoria donde la BIOS carga el primer sector de arranque del dispositivo seleccionado. Cuando se arranca desde un disco, la BIOS copia los primeros 512 bytes del disco a esa dirección. Es por esto que el [linker script](/TP3/link.ld) usa esa dirección, el código debe estar ensamblado como si fuera a ejecutarse allí, ya que efectivamente la CPU comenzará a ejecutarlo desde esa ubicación tras el arranque.
 
-#### ¿Que es la dirección que aparece en el script del linker? ¿Por qué es necesario?
+### Comparacion entre salida de objdump con hexdump
 
-La dirección `0x7C00` corresponde a la dirección física en memoria donde la BIOS carga el primer sector de arranque del dispositivo seleccionado. Cuando se arranca desde un disco, la BIOS copia los primeros 512 bytes del disco a esa dirección. Es por esto que el linker script usa esa dirección, el código debe estar ensamblado como si fuera a ejecutarse allí, ya que efectivamente la CPU comenzará a ejecutarlo desde esa ubicación tras el arranque.
-
----
-
-#### Compare la salida de objdump con hexdump, verifique donde fue colocado el programa dentro de la imagen.
-
-Salida de objdump:
+#### Salida de objdump
 
 Como podemos observar en la primera línea, el operando inmediato de `mov` (`be`) aparece como `00 00` porque en el archivo objeto (`.o`) la dirección del símbolo `msg` todavía no fue resuelta. Esto sucede porque el `.o` es un archivo relocatable, es decir, aún no tiene direcciones finales asignadas. La instrucción `mov $msg, %si` depende de conocer la dirección exacta de `msg`, pero en esta etapa el ensamblador no sabe dónde quedará ubicado en memoria. Por ese motivo, deja un valor placeholder (`0x0000`) y registra información de relocalización para que el linker pueda corregirlo más adelante. Luego durante el proceso de linking, el linker asigna direcciones reales, calcula la dirección final de msg y reemplaza ese valor incompleto por el correcto.
 
 ![object dump del programa ensamblado](https://github.com/user-attachments/assets/1cba194b-fbc0-444f-9561-48e978e8bedf)
 
-Salida de hexdump:
+#### Salida de hexdump
 
 En los primeros bytes (arriba a la izquierda) se observa que la instrucción `mov` ya tiene el operando inmediato correctamente resuelto, en este caso `0x7C0F`, que corresponde a la dirección donde se encuentra `msg`. Esto tiene sentido porque en el linker script se definió que el programa debía ubicarse a partir de la dirección `0x7C00`. Como msg está a un offset de aproximadamente `0x0F` dentro del programa, el linker calcula su dirección final como `0x7C00 + 0x0F = 0x7C0F` y reemplaza el valor inmediato en la instrucción.
 
 ![hexdump del binario generado](https://github.com/user-attachments/assets/b4f80063-5d56-43d5-b1c1-6f68b1a37a69)
 
----
-
-#### Grabar la imagen en un pendrive y probarla en una pc y subir una foto
+### Grabar la imagen en un pendrive y probarla en una pc y subir una foto
 
 <!-- Por ahora no se pudo hacer andar en pc :( -->
 
----
-
-#### ¿Para que se utiliza la opción `--oformat binary` en el linker?
+### ¿Para que se utiliza la opción `--oformat binary` en el linker?
 
 La opción `--oformat binary` en el linker indica que la salida debe ser un binario plano (flat binary), es decir, una secuencia de bytes sin ningún tipo de estructura adicional. Por defecto, el linker genera archivos en formato ELF, que incluyen metadata como encabezados (ELF header), tablas de segmentos (program headers), tablas de secciones, símbolos, etc. En este caso no se utiliza ELF porque el programa no será cargado por un sistema operativo, sino directamente por la BIOS, que espera encontrar código ejecutable en formato crudo dentro del sector de arranque. Por lo tanto, es necesario eliminar toda esa metadata y dejar únicamente los bytes que la CPU va a ejecutar.
 
 ---
 
-## Referencias
+Crear un código assembler que pueda pasar a modo protegido (sin macros).
+¿Cómo sería un programa que tenga dos descriptores de memoria diferentes, uno para cada segmento (código y datos) en espacios de memoria diferenciados?
+Cambiar los bits de acceso del segmento de datos para que sea de solo lectura, intentar escribir, ¿Que sucede? ¿Que debería suceder a continuación? (revisar el teórico) Verificarlo con gdb.
+En modo protegido, ¿Con qué valor se cargan los registros de segmento ? ¿Porque?
