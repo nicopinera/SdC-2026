@@ -91,7 +91,7 @@ La etapa de enlazamiento o linkeo es la ultima del proceso de compilación, prod
 
 La dirección `0x7C00` corresponde a la dirección física en memoria donde la BIOS carga el primer sector de arranque del dispositivo seleccionado. Cuando se arranca desde un disco, la BIOS copia los primeros 512 bytes del disco a esa dirección. Es por esto que el [linker script](/TP3/link.ld) usa esa dirección, el código debe estar ensamblado como si fuera a ejecutarse allí, ya que efectivamente la CPU comenzará a ejecutarlo desde esa ubicación tras el arranque.
 
-### Comparacion entre salida de objdump con hexdump
+### Comparación entre salida de objdump con hexdump
 
 #### Salida de objdump
 
@@ -106,19 +106,37 @@ En los primeros bytes (arriba a la izquierda) se observa que la instrucción `mo
 ![hexdump del binario generado](https://github.com/user-attachments/assets/b4f80063-5d56-43d5-b1c1-6f68b1a37a69)
 
 ### Grabar la imagen en un pendrive y probarla en una pc y subir una foto
+Para realizar esta parte tuvimos que modificar un poco el programa que se nos provee para que funcione correctamente, las cosas que se le agrego al programa son:
+1. Inicializacion de registros de datos y stack
+2. Limpieza de la pantalla y establecimiento en modo texto
+3. Configuracion de registros para imprimir: Normalización de video para limpiar el estado previo del hardware, y definición estricta de parámetros de registros para garantizar que la BIOS ejecute la impresión de forma visible y predecible.
 
-<!-- Por ahora no se pudo hacer andar en pc :( -->
+Primero compilamos el programa:
+
+```bash
+as -g -o main.o main.S
+ld --oformat binary -o main.img -T link.ld main.o
+```
+Verificamos como aparece nuestro pendrive en el sistema con lsblk:
+
+```bash
+lsblk
+```
+
+Luego lo grabamos en el pendrive con dd:
+
+```bash
+sudo dd if=main.img of=/dev/sda bs=446 count=1 conv=notrunc
+```
+Finalmente asegurandonos que nuestro sistema de arranque permita legacy boot, para poder ejecutar el pendrive, y ejecutamos el pendrive:
+
+![foto monitor](https://github.com/user-attachments/assets/b0e6d59a-857f-4982-85e7-32f1844e15d5)
 
 ### ¿Para que se utiliza la opción `--oformat binary` en el linker?
 
 La opción `--oformat binary` en el linker indica que la salida debe ser un binario plano (flat binary), es decir, una secuencia de bytes sin ningún tipo de estructura adicional. Por defecto, el linker genera archivos en formato ELF, que incluyen metadata como encabezados (ELF header), tablas de segmentos (program headers), tablas de secciones, símbolos, etc. En este caso no se utiliza ELF porque el programa no será cargado por un sistema operativo, sino directamente por la BIOS, que espera encontrar código ejecutable en formato crudo dentro del sector de arranque. Por lo tanto, es necesario eliminar toda esa metadata y dejar únicamente los bytes que la CPU va a ejecutar.
 
 ---
-
-> [!NOTE] Faltan estas preguntas
-> Crear un código assembler que pueda pasar a modo protegido (sin macros).
-> ¿Cómo sería un programa que tenga dos descriptores de memoria diferentes, uno para cada segmento (código y datos) en espacios de memoria diferenciados?
-> Cambiar los bits de acceso del segmento de datos para que sea de solo lectura, intentar escribir, ¿Que sucede? ¿Que debería suceder a continuación? (revisar el teórico) Verificarlo con gdb.
 
 ### Modo protegido y registro de segmentos
 
@@ -135,3 +153,203 @@ El cambio de "dirección" a "selector" responde a la necesidad de implementar se
 2. **Separación de Memoria Lógica y Física**: El uso de selectores permite que el Sistema Operativo mueva datos en la RAM física sin que el programa se de cuenta. El programa sigue usando el mismo "Selector", pero el Sistema Operativo actualiza la dirección base en la tabla GDT. Esto es la base de la relocalización dinámica.
 
 3. **Implementación de los Anillos de Privilegio (Protection Rings)**: El valor cargado en el registro de segmento incluye el RPL. Esto permite a la CPU comparar el privilegio del código que se intenta ejecutar con el privilegio del segmento al que intenta acceder, impidiendo que una aplicación de usuario (Ring 3) acceda directamente a la memoria del núcleo o del firmware UEFI (Ring 0).
+
+---
+
+### Pasaje de modo real a modo protegido sin usar macros:
+
+Para pasar de modo real a modo protegido a mano requiere configurar correctamente estructuras del procesador que normalmente abstraen los compiladores/bootloaders:
+
+1. Deshabilitar interrupciones: ejecutar la instruccion cli, esto evita que una IRQ use estructuras aún no válidas.
+
+```NASM
+cli
+```
+
+2. Habilitar línea A20: Necesaria para direccionar más de 1 MB. Esto se puede hacer mediante el puerto 0x92:
+
+```NASM
+in al, 0x92
+or al, 00000010b
+out 0x92, al
+```
+3. Definir la tabla global de descriptores de segmento (GDT). Se requiere al menos:
+- El Descriptor nulo
+- El Segmento código (base 0, límite 4GB, ejecutable)
+- El Segmento datos (base 0, límite 4GB, writable)
+
+```NASM
+gdt_start:
+
+gdt_null:
+    dq 0x0000000000000000
+; En este caso tanto el segmento de codigo como datos
+; acceden al mismo espacio lineal
+gdt_code:
+    dq 0x00CF9A000000FFFF
+
+gdt_data:
+    dq 0x00CF92000000FFFF
+
+gdt_end:
+```
+
+```NASM
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1
+    dd gdt_start
+```
+4. Cargar la dirección en el registro GDTR:
+
+```NASM
+lgdt [gdt_descriptor]
+```
+5. Activar bit PE (Protection Enable) en CR0
+
+```NASM
+mov eax, cr0
+or eax, 1
+mov cr0, eax
+```
+6. Hacer un Far jump: Esto limpia el pipeline y carga CS con selector válido de la GDT.
+
+```NASM
+jmp 0x08:protected_mode_entry
+```
+7. Cambiar a código de 32 bits y reconfigurar segmentos DS, ES, SS, etc.
+
+```NASM
+[bits 32]
+
+protected_mode_entry:
+
+mov ax, 0x10
+mov ds, ax
+mov es, ax
+mov ss, ax
+mov fs, ax
+mov gs, ax
+```
+9. Inicializar el stack
+
+```NASM
+mov esp, 0x90000
+```
+---
+
+### Separación de descriptores
+Para romper el esquema de "modelo plano" (donde todos los segmentos comparten la base 0), se asignan regiones de memoria diferenciadas a los descriptores de código y datos. Esto permite que el hardware aísle los datos de las instrucciones, incrementando la seguridad y el orden del sistema.
+
+En el archivo `segmentos_separados.asm`, definimos la tabla de la siguiente manera:
+```NASM
+gdt_start:
+    dq 0x0000000000000000   ; Descriptor nulo obligatorio
+
+; Segmento de código (Base = 0x00000000)
+gdt_code:
+    dw 0xFFFF              ; Límite [15:0]
+    dw 0x0000              ; Base [15:0]
+    db 0x00                ; Base [23:16]
+    db 10011010b           ; Atributos de código
+    db 11001111b           ; Granularidad y Límite [19:16]
+    db 0x00                ; Base [31:24]
+
+
+gdt_data:
+    dw 0xFFFF
+    dw 0x0000
+    db 0x02                ; Base [23:16] (0x02 << 16 = 0x00020000)
+    db 10010010b           ; Atributos de datos
+    db 11001111b
+    db 0x00
+gdt_end:
+```
+
+#### Atributos de los Segmentos
+
+1. Segmento de código (10011010b):
+
+P (Present) = 1: El segmento está cargado en la memoria física.
+DPL (Privilege) = 00: Nivel de privilegio máximo (Ring 0 / Kernel).
+S (System) = 1: Indica que es un descriptor de código o datos (no de sistema como una TSS).
+
+Tipo (1010b):
+1: Segmento de codigo.
+0: No conforme (No permite ejecución desde privilegios menores).
+1: Lectura permitida (Permite leer constantes del segmento de código).
+0: Accessed (Bit que el CPU pone en 1 tras el primer acceso).
+
+1. Segmento de datos (10010010b):
+
+P, DPL, S: Son Idénticos al de código para operar en el mismo nivel de privilegio.
+
+Tipo (0010b):
+0: Segmento de datos.
+0: Expand-up (Direccionamiento normal hacia arriba).
+1: Escribible (Permite operaciones mov [mem], reg).
+0: Accessed.
+
+A partir de la activación del modo protegido, la MMU (Memory Management Unit) calcula la ubicación física de cada dato mediante la fórmula:
+
+$$\large \text{Dirección Lineal} = \text{Base del Segmento} + \text{Offset}$$
+
+Para que este esquema sea funcional, debemos considerar dos escenarios:
+
+1. Alineación del Código: Si decidimos cambiar la base del segmento de código en la GDT (por ejemplo, a 0x100000), el código físicamente debe residir en esa dirección antes de realizar el salto largo (`jmp selector:offset`). En un bootloader, esto requeriría copiar el sector cargado por el BIOS desde `0x7C00` a la nueva base usando instrucciones como `rep movsb` en modo real.
+
+2. Ubicación de los Datos: Dado que el segmento de datos tiene base 0x00020000, cualquier acceso a una variable o dirección absoluta se verá desplazado. Por ejemplo:
+
+```NASM
+mov ax, 0x10    ; Selector de datos (Base 0x20000)
+mov ds, ax
+mov dword [0], 0xCAFEBABE
+```
+
+La instrucción anterior no escribe en la dirección física 0x0, sino en la dirección física 0x00020000. Esto demuestra que la segmentación permite abstraer las direcciones lógicas que usa el programador de las direcciones físicas reales del hardware.
+
+---
+
+### Experimento: Cambio del bit de acceso al segmento de datos
+En esta etapa, modificamos el descriptor del segmento de datos en la GDT para restringir los permisos de escritura. El objetivo es observar cómo reacciona la arquitectura x86 cuando el software intenta violar las reglas de protección de memoria definidas en la tabla de descriptores.Para ello, cambiamos el byte de acceso de `10010010b` (Lectura/Escritura) a `10010000b` (Solo Lectura)
+```NASM
+gdt_data_ro:
+    dw 0xFFFF                   ; Límite [15:0]
+    dw 0x0000                   ; Base [15:0]
+    db 0x00                     ; Base [23:16]
+    db 10010000b                ; Atributos: El bit 1 (W) se establece en 0
+    db 11001111b                ; Flags (Granularidad y Límite)
+    db 0x00                     ; Base [31:24]
+```
+
+Utilizando GDB y los logs de QEMU, podemos analizar el colapso del sistema paso a paso:
+
+Al iniciar, el procesador se encuentra en Modo Real. Ponemos un breakpoint en 0x7c00, que es la dirección física donde el BIOS carga nuestro sector de arranque.
+
+![gdb inicio](https://github.com/user-attachments/assets/2acc3e48-f0c4-4110-9fd4-03e6c330ac56)
+
+Avanzamos por las instrucciones que habilitan la línea A20 y preparan la carga de la GDT mediante la instrucción lgdt. En este punto, el registro interno GDTR ya conoce la ubicación y el tamaño de nuestra tabla.
+
+![carga del gdt](https://github.com/user-attachments/assets/9a7f8d4b-66e5-4b19-9afb-0fbb470f6a7b)
+
+Procedemos a activar el bit PE (Protection Enable) del registro CR0.
+
+![Habilitacion de PE](https://github.com/user-attachments/assets/8e45f6c8-9bd7-4dba-acf9-a99c524406a6)
+
+Al intentar ejecutar la instrucción `mov dword [0x500], 0xDEADBEEF`, el procesador consulta los derechos de acceso del segmento en el shadow register y detecta que la escritura está prohibida.
+
+![Intento de carga de dato](https://github.com/user-attachments/assets/649c810b-383e-48cf-972d-0db648ad1ccd)
+
+En la terminal de QEMU, observamos el registro de interrupciones que confirma el error:
+
+`check_exception old: 0xffffffff new 0xd`
+`check_exception old: 0xd new 0xd`
+`check_exception old: 0x8 new 0xd`
+
+
+![Salida qemu](https://github.com/user-attachments/assets/d1c7ac90-0666-4ba6-89c0-27bad5c707b6)
+
+0xd (13) *#GP (General Protection Fault)*: Es la excepción principal, se dispara porque intentamos escribir en un segmento de datos que no tiene el bit W (Writable) activo.
+
+0x8	*#DF (Double Fault)*: Al no tener una IDT (Interrupt Descriptor Table) configurada, el CPU no puede encontrar el manejador para el #GP. Esto genera una segunda falla al intentar procesar la primera.
+
+Finalmente, al no poder manejar el Double Fault, se produce el Triple Fault y la CPU se reinicia (Reset).

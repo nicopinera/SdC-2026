@@ -4,6 +4,9 @@ compilar:
 	@as -g -o main.o main.S
 	@ld --oformat binary -o main.img -T link.ld main.o
 	@echo "Imagen compilada"
+	@echo "Compilando programa para testear error de escritura en segmento de solo lectura"
+	@nasm -f bin segmentos_mal_configurados.asm -o test.bin
+	@echo "Programa compilado"
 
 ejecutar_qemu: compilar
 	@echo "Ejecutando la imagen en qemu"
@@ -17,4 +20,7 @@ ifndef NAME
 endif
 
 grabar_pendrive: compilar check-name
-	@sudo dd if=main.img of=/dev/$(NAME) bs=512 count=1 conv=fsync
+	@sudo dd if=main.img of=/dev/$(NAME) bs=446 count=1 conv=notrunc
+
+ejecutar_test: compilar
+	@qemu-system-i386 -drive format=raw,file=test.bin -d int -no-reboot -s -S
