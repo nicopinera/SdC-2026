@@ -35,7 +35,7 @@
 <!-- Aca poner una introduccion sobre UEFI, cuando se desarrolla, porque y que remplaza (BIOS) -->
 
 <!-- Diferencia entre UEFI y PI, etapas de PI, copiaria literal como esta en la presentación de TP -->
-
+<!-- Que tipos de servicios existen Boot Services y Runtime services -->
 ## Resultados
 
 ### Primera parte: Exploración del entorno UEFI y la Shell
@@ -127,3 +127,58 @@ Los tipos pueden ser:
 |MMIO / MMIO_Port | Memoria mapeada para entrada/salida. No es RAM física real, sino "direcciones" que se comunican directamente con el hardware (como tu tarjeta de video o red).|
 
 Las regiones RT_Code (Runtime Services Code) son extremadamente sensibles. Si un malware logra inyectarse ahí, puede sobrevivir incluso después de que se formatee el disco y se reinstale el SO, ya que reside en el mapa de memoria del firmware del disco duro, no en el almacenamiento del SO.
+
+### Segunda parte: Desarrollo, compilación y análisis de seguridad
+
+Para esta fase del proyecto, desarrollamos una aplicación nativa para el entorno UEFI (Unified Extensible Firmware Interface) escrita en lenguaje C. A diferencia de un programa convencional, este código se ejecuta en una etapa de *bare metal*, es decir, antes de que cualquier sistema operativo haya tomado el control del hardware.
+
+```C
+#include <efi.h>
+#include <efilib.h>
+
+EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
+  InitializeLib(ImageHandle, SystemTable);
+  SystemTable->ConOut->OutputString(SystemTable->ConOut,
+                                    L"Iniciando analisis de seguridad...\r\n");
+  // Inyección de un software breakpoint (INT3)
+  unsigned char code[] = {0xCC};
+  if (code[0] == 0xCC) {
+    SystemTable->ConOut->OutputString(SystemTable->ConOut,
+                                      L"Breakpoint estatico alcanzado.\r\n");
+  }
+  return EFI_SUCCESS;
+}
+```
+
+Dado que el programa se ejecutará en un entorno previo al arranque de un sistema operativo, el programa debe ser autosuficiente, por lo tanto debe interactuar directamente con las tablas de servicios que el firmware mantiene en memoria estos son los protocolos estandarizado de UEFI.
+
+La compilación se gestionó mediante CMake, configurando un flujo de trabajo especializado para generar un binario compatible con la arquitectura de firmware moderna. 
+
+Tras obtener el ejecutable en formato `.efi`, procedimos a su análisis mediante Ghidra, una suite de ingeniería inversa de código abierto desarrollada por la NSA. El foco del análisis se centró en la función `efi_main`, el punto de entrada estándar donde el firmware transfiere el control a nuestra aplicación.
+
+Podemos observar el código ensamblador de nuestro programa:
+
+![Ensamblador](https://github.com/user-attachments/assets/fc28fc2a-5ec8-4e4f-a500-ddfb73b454bb)
+
+Ademas Ghidra proporciona decompilador que intenta reconstruir el codigo original a partir del ensamblador
+
+![Decompiler](https://github.com/user-attachments/assets/5785872f-e6a5-4a04-9b22-50528a3201eb)
+
+Si bien el descompilador de Ghidra facilita la comprensión de la lógica, al reconstruir una aproximación en lenguaje C. Las optimizaciones aplicadas durante la descompilación pueden omitir comprobaciones críticas o representar erróneamente tipos de datos, especialmente en entornos de bajo nivel como UEFI donde la gestión de punteros y estructuras de sistema es manual.
+
+#### Técnicas de Anti-Debugging: Detección de Software Breakpoints (0xCC)
+
+En el desarrollo de malware y software protegido, la inclusión de verificaciones basadas en el valor 0xCC tiene como objetivo detectar si un analista de seguridad está inspeccionando el código en tiempo de ejecución.
+
+En la arquitectura x86-64, el byte 0xCC corresponde a la instrucción INT 3. Esta es la herramienta fundamental que utilizan los depuradores (como GDB) para pausar la ejecución de un programa. Cuando un analista coloca un "punto de interrupción" o breakpoint, el depurador reemplaza temporalmente el byte original de una instrucción por un 0xCC
+
+Los autores de malware implementan comprobaciones similares a la realizada en nuestro programa en C para verificar su propia integridad, por ejemplo hacer que el programa recorra sus propias secciones de código (.text) buscando el byte 0xCC, y si lo encuentra, asume que ha sido manipulado por un depurador. Luego al detectar la presencia de un breakpoint, el malware puede ejecutar rutinas de evasión, como finalizar su proceso, corromper su propio código o mostrar mensajes falsos para engañar al investigador. 
+
+En nuestro experimento, el uso de `unsigned char code[] = {0xCC}` funciona como un testigo de memoria. Si bien no detiene el programa porque se trata como un dato y no como una instrucción ejecutable, sirve para demostrar cómo estas firmas pueden ser detectadas tanto por el software mismo como por herramientas de análisis estático como Ghidra
+
+Desde la perspectiva del análisis, estas comprobaciones presentan dos desafíos:
+
+1. Ofuscación: En el descompilador de Ghidra, este valor puede aparecer erróneamente como -52 debido a la interpretación de tipos con signo, lo que podría ocultar la verdadera intención del código ante un analista inexperto.
+
+2. Optimización: Como se observó en nuestro análisis, los compiladores modernos pueden optimizar o eliminar estas condiciones si detectan que son constantes, lo que obliga al analista a recurrir siempre al código ensamblador (Listing) para confirmar la existencia de la protección.  
+
