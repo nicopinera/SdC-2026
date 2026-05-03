@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/julian/Documents/Facultad/Sistemas-de-Computacion/TPS/TP3-B/build",
+  "command": "/usr/bin/cc  -I/usr/include/efi -I/usr/include/efi/x86_64 -I/usr/include/efi/protocol -std=gnu11 -fpic -ffreestanding -fno-stack-protector -fno-strict-aliasing -fshort-wchar -mno-red-zone -o CMakeFiles/uefi_obj.dir/src/aplicacion.c.o -c /home/julian/Documents/Facultad/Sistemas-de-Computacion/TPS/TP3-B/src/aplicacion.c",
+  "file": "/home/julian/Documents/Facultad/Sistemas-de-Computacion/TPS/TP3-B/src/aplicacion.c",
+  "output": "CMakeFiles/uefi_obj.dir/src/aplicacion.c.o"
+}
+]
