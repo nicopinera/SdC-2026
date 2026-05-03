@@ -152,7 +152,7 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 
 Dado que el programa se ejecutará en un entorno previo al arranque de un sistema operativo, el programa debe ser autosuficiente, por lo tanto debe interactuar directamente con las tablas de servicios que el firmware mantiene en memoria estos son los protocolos estandarizado de UEFI.
 
-La compilación se gestionó mediante CMake, configurando un flujo de trabajo especializado para generar un binario compatible con la arquitectura de firmware moderna. 
+La compilación se gestionó mediante objetivos configurados en un archivo Makefile que posteriormente son ejecutados por el programa make
 
 Tras obtener el ejecutable en formato `.efi`, procedimos a su análisis mediante Ghidra, una suite de ingeniería inversa de código abierto desarrollada por la NSA. El foco del análisis se centró en la función `efi_main`, el punto de entrada estándar donde el firmware transfiere el control a nuestra aplicación.
 
@@ -181,4 +181,45 @@ Desde la perspectiva del análisis, estas comprobaciones presentan dos desafíos
 1. Ofuscación: En el descompilador de Ghidra, este valor puede aparecer erróneamente como -52 debido a la interpretación de tipos con signo, lo que podría ocultar la verdadera intención del código ante un analista inexperto.
 
 2. Optimización: Como se observó en nuestro análisis, los compiladores modernos pueden optimizar o eliminar estas condiciones si detectan que son constantes, lo que obliga al analista a recurrir siempre al código ensamblador (Listing) para confirmar la existencia de la protección.  
+
+### Tercera parte: Ejecución en Hardware Físico (Bare Metal)
+
+Para esta ultima parte vamos a instalar UEFI Shell de TianoCore y ejecutaremos el programa en la computadora usando un pendrive
+
+Usando lsblk identificamos nuestro pendrive y sus particiones (En mi caso es /dev/sda1.)
+
+```bash
+lsblk
+```
+Lo montamos en una carpeta, en nuestro caso en /mnt:
+
+```bash
+sudo mount /dev/sda1 /mnt
+```
+
+Creamos la estructura estandarizada de directorios
+
+```bash
+sudo mkdir -p /mnt/EFI/BOOT
+```
+
+Descargamos dentro la UEFI Shell de TianoCore
+
+```bash
+sudo wget
+https://github.com/tianocore/edk2/raw/UDK2018/ShellBinPkg/UefiShell/X64/Shell.efi -O
+/mnt/EFI/BOOT/BOOTX64.EFI
+```
+
+y finalmente guardamos el programa dentro del pendrive y lo desmontamos
+
+```bash
+cp aplicacion.efi /mnt
+sudo sync
+sudo umount /mnt
+```
+
+Booteamos el pendrive y dentro de la UEFI Shell ejecutamos el programa:
+
+![Ejecución del programa](https://github.com/user-attachments/assets/882bb7e1-e703-47a6-bf50-be508f996755)
 
