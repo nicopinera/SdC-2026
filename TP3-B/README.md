@@ -32,10 +32,27 @@
 
 ## Introducción
 
-<!-- Aca poner una introduccion sobre UEFI, cuando se desarrolla, porque y que remplaza (BIOS) -->
+Sabemos que el proceso de arranque de una computadora es un entorno completo y sofisticado que gestiona el hardware, verifica la integridad del sistema y decide qué cargar: el firmware.
 
-<!-- Diferencia entre UEFI y PI, etapas de PI, copiaria literal como esta en la presentación de TP -->
-<!-- Que tipos de servicios existen Boot Services y Runtime services -->
+Durante mucho tiempo, este rol fue cumplido por el BIOS (Basic Input/Output System), un estándar desarrollado en los años 70 que, si bien fue revolucionario en su época, comenzó a mostrar limitaciones severas: soporte máximo de discos de 2TB, arranque en modo de 16 bits, interfaz rudimentaria y escasa capacidad de extensión.Para superar estas limitaciones, Intel desarrolló la especificación EFI (Extensible Firmware Interface), que luego evolucionó en el estándar abierto UEFI (Unified Extensible Firmware Interface), gestionado por el UEFI Forum con participación de los principales fabricantes de hardware y software del mundo.
+
+Este trabajo práctico tiene como objetivo explorar este entorno desde una perspectiva técnica y práctica. Se desarrolla una aplicación nativa en C para UEFI que se ejecut en un entorno emulado con QEMU/OVMF y en hardware físico real (bare metal). A lo largo del trabajo se abordarán también conceptos de seguridad relevantes, como las técnicas de anti-debugging basadas en la detección del byte 0xCC (INT 3), que ilustran cómo el entorno pre-OS puede ser tanto un vector de ataque como un campo de análisis para la seguridad informática.
+
+
+## Marco teórico
+
+El proceso de inicialización de UEFI se enmarca dentro de la especificación PI (Platform Initialization), que define las etapas secuenciales por las cuales el firmware inicializa progresivamente el hardware antes de transferir el control al cargador del sistema operativo. Este proceso expone dos categorías de servicios fundamentales: los Boot Services, y los Runtime Services. Siendo los Boots Service aquellos disponible únicamente durante el arranque. Entre sus funciones principales se encuentran: Gestión de memoria, gestión de handles y protocolos, gestión de drivers e imágenes y eventos y temporizadores. 
+Por otro lado los Runtime service son servicios que persisten luego de que el SO tome el control, incluso una vez que los Boot Services ya no están disponibles. Sus funciones son: leer, escribir y eliminar variables persistentes del firmware que sobreviven entre reinicios, obtener y configurar la hora del hardware (RTC), solicitar al firmware un reinicio, apagado o cambio de modo y registrar fallos del sistema
+
+Respecto UEFI y PI podemos diferenciar dos conceptos fundamentales: UEFI es puramente una especificación de interfaz. Define las APIs, estructuras de datos y el entorno pre-OS mediante el cual interactúan el firmware, los componentes de hardware y los cargadores del sistema operativo; UEFI define qué servicios están disponibles y cómo se accede a ellos. En cambio  PI (Platform Initialization) es la arquitectura interna del firmware. Define cómo se construye la plataforma desde el momento del reset del hardware, estableciendo fases de control bien definidas hasta que se crea el entorno UEFI para el sistema operativo.
+
+Etapas de PI: 
+- SEC (Security): Es la fase inicial pre-memoria. Establece un contexto mínimo de ejecución, configurando la memoria caché del procesador para usarla como RAM temporal (Cache-as-RAM) antes de que la memoria principal esté disponible. También establece la raíz de confianza inicial del sistema.
+- PEI (Pre-EFI Initialization): Tiene como objetivo inicializar el hardware crítico mínimo, como el controlador de memoria principal y partes del chipset. También determina el modo de arranque y pasa la información descubierta a la siguiente fase mediante estructuras llamadas Hand-Off Blocks (HOBs).
+- DXE (Driver Execution Environment): Es el núcleo de la inicialización. Un componente llamado DXE Dispatcher carga y ejecuta drivers en un orden determinado por sus dependencias lógicas. En esta fase se instalan la mayoría de las abstracciones de hardware, buses como PCI o USB, y los servicios centrales de UEFI.
+- BDS (Boot Device Selection): Es donde el firmware decide la política de arranque basándose en variables almacenadas en NVRAM. Conecta los dispositivos de consola, expone dispositivos de almacenamiento o red y finalmente transfiere el control al cargador del sistema operativo.
+- RT (Runtime): Comienza cuando el bootloader invoca ExitBootServices(). Esto finaliza el entorno de pre-arranque, libera la mayor parte de la memoria, pero conserva los Runtime Services que el sistema operativo puede seguir usando, como la manipulación de variables NVRAM o el control del reloj del sistema.
+
 ## Resultados
 
 ### Primera parte: Exploración del entorno UEFI y la Shell
