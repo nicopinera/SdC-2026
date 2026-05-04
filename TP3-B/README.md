@@ -107,9 +107,9 @@ El comando set permite definir y gestionar variables de entorno dentro de la UEF
 
 De la salida podemos observar que la variable tiene los siguientes atributos:
 
-NV: Non Volatile (persiste entre reinicios)
-BS: accesible durante Boot Services
-RT: accesible en Runtime (post-boot)
+- NV: Non Volatile (persiste entre reinicios)
+- BS: accesible durante Boot Services
+- RT: accesible en Runtime (post-boot)
 
 Ademas la variable esta seteada como: `00 00 01 00 02 00`
 
