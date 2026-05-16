@@ -14,3 +14,15 @@ perf.data.old
 *.so
 
 build/
+.mimodulo
+mimodulo.ko
+mimodulo.mod
+mimodulo.mod.c
+Module.symvers
+modules.order
+.modules.order.cmd
+.Module.symvers.cmd
+.mimodulo.*
+..*
+
+paquete
