@@ -1,13 +1,14 @@
 #include <linux/module.h>	/* Requerido por todos los módulos */
 #include <linux/kernel.h>	/* Definición de KERN_INFO */
 MODULE_LICENSE("GPL"); 	/*  Licencia del modulo */
-MODULE_DESCRIPTION("Primer modulo ejemplo");
-MODULE_AUTHOR("Catedra de SdeC");
+MODULE_DESCRIPTION("Primer modulo TP4");
+MODULE_AUTHOR("Catedra de SdeC - Grupo Bare metal guys");
 
 /* Función que se invoca cuando se carga el módulo en el kernel */
 int modulo_lin_init(void)
 {
 	printk(KERN_INFO "Modulo cargado en el kernel.\n");
+	printk(KERN_INFO "Grupo: Bare metal guys\n");
 
 	/* Devolver 0 para indicar una carga correcta del módulo */
 	return 0;
