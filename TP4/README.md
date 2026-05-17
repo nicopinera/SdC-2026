@@ -198,6 +198,17 @@ Cuando conectas un hardware (USB, PCI, etc.) y el kernel no encuentra un _driver
 2. **Ausencia de interfaz en /dev**: los _drivers_ crean un archivo especial en `/dev`. Si el _driver_ no está disponible, no se crea el nodo de dispositivo y las aplicaciones fallan (_Device not found_).
 3. En el log del sistema (_dmesg_), se observa que el hardware fue detectado, pero no aparecerán los mensajes típicos de "driver assigned" o "initialized".
 
+### Módulos cargados en un WSL
+
+A continuación se muestra la salida de `lsmod` en un entorno WSL:
+
+![lsmod juana](captura1.png)
+
+> Nota: Al ejecutarse sobre WSL, los módulos cargados reflejan
+> el kernel virtualizado de Windows, no el hardware físico directo.
+
+La salida completa se encuentra en [lsmod_juana.txt](/TP4/lsmod_juana.txt).
+
 ### Syscall
 
 Una llamada al sistema (o _System Call_) es el mecanismo fundamental que utiliza un programa para solicitar un servicio al núcleo (_kernel_) del sistema operativo. Es la interfaz que permite que un programa pase del Espacio de Usuario (donde tiene permisos restringidos) al Espacio de Kernel (donde el sistema operativo tiene control total sobre el hardware).
