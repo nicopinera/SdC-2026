@@ -201,7 +201,21 @@ Un programa tiene dos formas de lidiar con un segmentation fault:
 1. **Manejo por defecto**: La mayoría de los programas no hacen nada especial. Cuando reciben la señal **SIGSEGV**, el sistema operativo los finaliza abruptamente y el usuario ve el famoso mensaje en consola: Segmentation fault (core dumped).
 2. **Manejo personalizado (Signal Handling)**: Un programa puede intentar atrapar la señal usando la función _signal()_ o _sigaction()_ de la librería de C. Se puede programar para que, antes de morir, el programa guarde un log de error o intente cerrar archivos abiertos de forma segura. Intentar ignorar un segfault y seguir ejecutando el programa es extremadamente peligroso y casi nunca funciona, porque la instrucción que causó el error sigue siendo inválida y el programa entraría en un bucle infinito de errores.
 
-Dada la siguiente nota https://arstechnica.com/security/2024/08/a-patch-microsoft-spent-2-years-preparing-is-making-a-mess-for-some-linux-users/
-¿Cuál fue la consecuencia principal del parche de Microsoft sobre GRUB en sistemas con arranque dual (Linux y Windows)?
-¿Qué implicancia tiene desactivar Secure Boot como solución al problema descrito en el artículo?
-¿Cuál es el propósito principal del Secure Boot en el proceso de arranque de un sistema?
+### Consecuencia principal del parche de Microsoft sobre GRUB
+
+La consecuencia principal fue que los sistemas con arranque dual (dual-boot) configurados para ejecutar tanto Windows como Linux dejaron de poder iniciar las distribuciones de Linux cuando la función Secure Boot estaba activada. Al intentar cargar Linux, los usuarios se encontraron con un mensaje de error crítico: “Something has gone seriously wrong”, seguido de una notificación de fallo en la verificación de datos SBAT por una violación de la política de seguridad. Aunque Microsoft inicialmente afirmó que la actualización no se aplicaría a sistemas de arranque dual, el parche afectó a múltiples distribuciones recientes, incluidas Ubuntu 24.04 y Debian 12.6.0, bloqueando su acceso por completo.
+
+### Implicancia de desactivar Secure Boot como solución
+
+Desactivar Secure Boot en el panel EFI es una de las soluciones inmediatas para recuperar el acceso al sistema Linux, pero conlleva una implicancia de seguridad significativa: el dispositivo deja de verificar la integridad del firmware y el software cargado durante el inicio.
+
+- **Vulnerabilidad**: Al desactivarlo, el sistema queda expuesto a la carga de código malicioso antes de que el sistema operativo tome el control.
+- **Alternativa recomendada**: El artículo sugiere que una opción preferible a corto plazo es eliminar la política SBAT específica que Microsoft instaló. Esto permite que el sistema vuelva a arrancar manteniendo los beneficios generales de Secure Boot, aunque el usuario siga siendo vulnerable específicamente al exploit de GRUB (CVE-2022-2601) que el parche intentaba mitigar.
+
+### Propósito principal del Secure Boot en el arranque
+
+El propósito fundamental de _Secure Boot_ es actuar como un estándar de la industria para garantizar que los dispositivos no carguen firmware o software malicioso durante el proceso de inicio del sistema. Su funcionamiento se basa en un mecanismo de confianza donde:
+
+- La UEFI solo ejecuta cargadores de arranque (como GRUB o el gestor de Windows) que estén firmados con claves válidas.
+- Utiliza un mecanismo llamado SBAT (Secure Boot Advanced Targeting) para revocar componentes específicos del proceso de arranque si se descubre que son vulnerables, evitando así que atacantes utilicen versiones antiguas o comprometidas para eludir las protecciones del sistema.
+- En esencia, busca asegurar que el "camino de arranque" desde el hardware hasta el sistema operativo sea íntegro y confiable.
