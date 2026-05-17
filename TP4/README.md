@@ -30,7 +30,38 @@
 
 ---
 
+---
+
+## Índice
+
+- [Trabajo práctico 4 - Modulos de Kernel](#trabajo-práctico-4---modulos-de-kernel)
+  - [Nombres](#nombres)
+  - [UNC - Facultad de Ciencias Exactas, Físicas y Naturales](#unc---facultad-de-ciencias-exactas-físicas-y-naturales)
+  - [Cátedra: Sistema de Computadoras](#cátedra-sistema-de-computadoras)
+    - [Profesores](#profesores)
+  - [Información de los autores](#información-de-los-autores)
+  - [Índice](#índice)
+  - [Introducción](#introducción)
+  - [Resultados](#resultados)
+    - [CheckInstall](#checkinstall)
+      - [Creacion de un paquete para Ubuntu con CheckInstall](#creacion-de-un-paquete-para-ubuntu-con-checkinstall)
+    - [Funciones de un programa vs un modulo](#funciones-de-un-programa-vs-un-modulo)
+      - [Programa](#programa)
+      - [Modulo](#modulo)
+    - [Espacio de Usuario vs Kernel](#espacio-de-usuario-vs-kernel)
+    - [Espacio de datos](#espacio-de-datos)
+    - [Drivers y /dev](#drivers-y-dev)
+    - [Modulos de Kernel](#modulos-de-kernel)
+    - [Syscall](#syscall)
+    - [Segmentation Fault](#segmentation-fault)
+    - [Consecuencia principal del parche de Microsoft sobre GRUB](#consecuencia-principal-del-parche-de-microsoft-sobre-grub)
+    - [Implicancia de desactivar Secure Boot como solución](#implicancia-de-desactivar-secure-boot-como-solución)
+    - [Propósito principal del Secure Boot en el arranque](#propósito-principal-del-secure-boot-en-el-arranque)
+  - [Conclusión](#conclusión)
+
 ## Introducción
+
+Este trabajo práctico tiene como objetivo explorar los conceptos fundamentales relacionados con los módulos del kernel de Linux, la gestión de paquetes, y la distinción entre el espacio de usuario y el espacio de kernel. A lo largo del informe, se analizan herramientas como `CheckInstall` para la creación de paquetes `.deb`, se profundiza en la mecánica de las llamadas al sistema (syscalls) mediante `strace`, y se examinan las implicancias de seguridad del mecanismo de Secure Boot y las recientes controversias relacionadas con las actualizaciones de GRUB. Además, se aborda la implementación y carga de módulos del núcleo, destacando las diferencias críticas en privilegios y manejo de memoria en el Anillo 0.
 
 ---
 
@@ -219,3 +250,11 @@ El propósito fundamental de _Secure Boot_ es actuar como un estándar de la ind
 - La UEFI solo ejecuta cargadores de arranque (como GRUB o el gestor de Windows) que estén firmados con claves válidas.
 - Utiliza un mecanismo llamado SBAT (Secure Boot Advanced Targeting) para revocar componentes específicos del proceso de arranque si se descubre que son vulnerables, evitando así que atacantes utilicen versiones antiguas o comprometidas para eludir las protecciones del sistema.
 - En esencia, busca asegurar que el "camino de arranque" desde el hardware hasta el sistema operativo sea íntegro y confiable.
+
+---
+
+## Conclusión
+
+La realización de este trabajo práctico permitió comprender la arquitectura de niveles de privilegio en los sistemas operativos modernos. La distinción entre el espacio de usuario y el espacio de kernel no es solo conceptual, sino una barrera física gestionada por el hardware (MMU) que garantiza la estabilidad del sistema frente a errores de programación o ataques maliciosos.
+
+Se destaca la potencia y responsabilidad que conlleva el desarrollo de módulos de kernel, donde un error mínimo puede derivar en un _Kernel Panic_. Asimismo, el análisis de Secure Boot y los incidentes con GRUB ponen de manifiesto la compleja relación entre la seguridad del firmware y la libertad de ejecución en entornos multi-boot. Herramientas como `CheckInstall` y `strace` resultaron fundamentales para desmitificar procesos que ocurren "detrás de escena" en la instalación y ejecución de software en sistemas Linux.
