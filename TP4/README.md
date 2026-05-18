@@ -207,8 +207,6 @@ A continuación se muestra la salida de `lsmod` en un entorno WSL:
 > Nota: Al ejecutarse sobre WSL, los módulos cargados reflejan
 > el kernel virtualizado de Windows, no el hardware físico directo.
 
-La salida completa se encuentra en [lsmod_juana.txt](/TP4/lsmod_juana.txt).
-
 ### Syscall
 
 Una llamada al sistema (o _System Call_) es el mecanismo fundamental que utiliza un programa para solicitar un servicio al núcleo (_kernel_) del sistema operativo. Es la interfaz que permite que un programa pase del Espacio de Usuario (donde tiene permisos restringidos) al Espacio de Kernel (donde el sistema operativo tiene control total sobre el hardware).
