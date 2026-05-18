@@ -202,7 +202,7 @@ Cuando conectas un hardware (USB, PCI, etc.) y el kernel no encuentra un _driver
 
 A continuación se muestra la salida de `lsmod` en un entorno WSL:
 
-![lsmod juana](captura1.png)
+![lsmod juana](https://github.com/user-attachments/assets/5b227d51-3bde-4bfe-9124-3ae6806845ce)
 
 > Nota: Al ejecutarse sobre WSL, los módulos cargados reflejan
 > el kernel virtualizado de Windows, no el hardware físico directo.
