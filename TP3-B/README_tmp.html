@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="trabajo-práctico-3-b---uefi">Trabajo práctico 3-B - UEFI</h1>
+<h2 id="nombres">Nombres</h2>
+<ul>
+<li>Nicolás Piñera</li>
+<li>Julián Krede</li>
+<li>Juana Pucheta Noguera</li>
+</ul>
+<p><strong>Nombre del grupo</strong>: Bare metal guys</p>
+<h2 id="unc---facultad-de-ciencias-exactas-físicas-y-naturales">UNC - Facultad de Ciencias Exactas, Físicas y Naturales</h2>
+<h2 id="cátedra-sistema-de-computadoras">Cátedra: Sistema de Computadoras</h2>
+<h3 id="profesores">Profesores</h3>
+<ul>
+<li>Javier Alejandro Jorge</li>
+<li>Miguel Ángel Solinas</li>
+</ul>
+<p><strong>Fecha:</strong> 4/5/2026</p>
+<hr>
+<h2 id="información-de-los-autores">Información de los autores</h2>
+<ul>
+<li><strong>Información de contacto</strong>:
+<ul>
+<li><a href="mailto:nicolas.pinera@mi.unc.edu.ar">nicolas.pinera@mi.unc.edu.ar</a></li>
+<li><a href="mailto:julian.krede@mi.unc.edu.ar">julian.krede@mi.unc.edu.ar</a></li>
+<li><a href="mailto:juana.pucheta.noguera@mi.unc.edu.ar">juana.pucheta.noguera@mi.unc.edu.ar</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="introducción">Introducción</h2>
+<p>Sabemos que el proceso de arranque de una computadora es un entorno completo y sofisticado que gestiona el hardware, verifica la integridad del sistema y decide qué cargar: el firmware.</p>
+<p>Durante mucho tiempo, este rol fue cumplido por el BIOS (Basic Input/Output System), un estándar desarrollado en los años 70 que, si bien fue revolucionario en su época, comenzó a mostrar limitaciones severas: soporte máximo de discos de 2TB, arranque en modo de 16 bits, interfaz rudimentaria y escasa capacidad de extensión.Para superar estas limitaciones, Intel desarrolló la especificación EFI (Extensible Firmware Interface), que luego evolucionó en el estándar abierto UEFI (Unified Extensible Firmware Interface), gestionado por el UEFI Forum con participación de los principales fabricantes de hardware y software del mundo.</p>
+<p>Este trabajo práctico tiene como objetivo explorar este entorno desde una perspectiva técnica y práctica. Se desarrolla una aplicación nativa en C para UEFI que se ejecut en un entorno emulado con QEMU/OVMF y en hardware físico real (bare metal). A lo largo del trabajo se abordarán también conceptos de seguridad relevantes, como las técnicas de anti-debugging basadas en la detección del byte 0xCC (INT 3), que ilustran cómo el entorno pre-OS puede ser tanto un vector de ataque como un campo de análisis para la seguridad informática.</p>
+<h2 id="marco-teórico">Marco teórico</h2>
+<p>El proceso de inicialización de UEFI se enmarca dentro de la especificación PI (Platform Initialization), que define las etapas secuenciales por las cuales el firmware inicializa progresivamente el hardware antes de transferir el control al cargador del sistema operativo. Este proceso expone dos categorías de servicios fundamentales: los Boot Services, y los Runtime Services. Siendo los Boots Service aquellos disponible únicamente durante el arranque. Entre sus funciones principales se encuentran: Gestión de memoria, gestión de handles y protocolos, gestión de drivers e imágenes y eventos y temporizadores.
+Por otro lado los Runtime service son servicios que persisten luego de que el SO tome el control, incluso una vez que los Boot Services ya no están disponibles. Sus funciones son: leer, escribir y eliminar variables persistentes del firmware que sobreviven entre reinicios, obtener y configurar la hora del hardware (RTC), solicitar al firmware un reinicio, apagado o cambio de modo y registrar fallos del sistema</p>
+<p>Respecto UEFI y PI podemos diferenciar dos conceptos fundamentales: UEFI es puramente una especificación de interfaz. Define las APIs, estructuras de datos y el entorno pre-OS mediante el cual interactúan el firmware, los componentes de hardware y los cargadores del sistema operativo; UEFI define qué servicios están disponibles y cómo se accede a ellos. En cambio  PI (Platform Initialization) es la arquitectura interna del firmware. Define cómo se construye la plataforma desde el momento del reset del hardware, estableciendo fases de control bien definidas hasta que se crea el entorno UEFI para el sistema operativo.</p>
+<p>Etapas de PI:</p>
+<ul>
+<li>SEC (Security): Es la fase inicial pre-memoria. Establece un contexto mínimo de ejecución, configurando la memoria caché del procesador para usarla como RAM temporal (Cache-as-RAM) antes de que la memoria principal esté disponible. También establece la raíz de confianza inicial del sistema.</li>
+<li>PEI (Pre-EFI Initialization): Tiene como objetivo inicializar el hardware crítico mínimo, como el controlador de memoria principal y partes del chipset. También determina el modo de arranque y pasa la información descubierta a la siguiente fase mediante estructuras llamadas Hand-Off Blocks (HOBs).</li>
+<li>DXE (Driver Execution Environment): Es el núcleo de la inicialización. Un componente llamado DXE Dispatcher carga y ejecuta drivers en un orden determinado por sus dependencias lógicas. En esta fase se instalan la mayoría de las abstracciones de hardware, buses como PCI o USB, y los servicios centrales de UEFI.</li>
+<li>BDS (Boot Device Selection): Es donde el firmware decide la política de arranque basándose en variables almacenadas en NVRAM. Conecta los dispositivos de consola, expone dispositivos de almacenamiento o red y finalmente transfiere el control al cargador del sistema operativo.</li>
+<li>RT (Runtime): Comienza cuando el bootloader invoca ExitBootServices(). Esto finaliza el entorno de pre-arranque, libera la mayor parte de la memoria, pero conserva los Runtime Services que el sistema operativo puede seguir usando, como la manipulación de variables NVRAM o el control del reloj del sistema.</li>
+</ul>
+<h2 id="resultados">Resultados</h2>
+<h3 id="primera-parte-exploración-del-entorno-uefi-y-la-shell">Primera parte: Exploración del entorno UEFI y la Shell</h3>
+<p>En esta primera parte del trabajo práctico se explora cómo UEFI abstrae el hardware y gestiona la configuración antes de la carga del sistema operativo. Al ejecutar QEMU con el firmware OVMF, el sistema no inicia un sistema operativo, sino que ingresa directamente a la UEFI Shell, un entorno interactivo pre-OS.</p>
+<p>En este estado inicial, al inspeccionar los dispositivos con el comando <code>map</code> se observa únicamente un dispositivo de tipo BLK0, lo que indica que el firmware detecta dispositivos a nivel de bloque pero no encuentra ningún sistema de archivos montado.</p>
+<p><img src="https://github.com/user-attachments/assets/c4e8eef2-0b4b-474d-b7b8-6db16c34896e" alt="Salida qemu sin imagen"></p>
+<p>Dado que UEFI no trabaja directamente con dispositivos crudos, sino con abstracciones basadas en protocolos. Para que el firmware pueda exponer un sistema de archivos (FS0) y eventualmente cargar aplicaciones o bootloaders, se necesita proporcionar un dispositivo de almacenamiento que contenga un filesystem válido (FAT en nuestro caso). En QEMU, esto se logra mediante la creación y conexión explícita de una imagen de disco. Esto se hace ejecutando los siguientes comandos:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=disk.img bs=1M count=64
+mkfs.vfat -F 32 disk.img
+</div></code></pre>
+<p>Luego se ejecuta qemu especificando la imagen:</p>
+<pre class="hljs"><code><div>qemu-system-x86_64 -m 512 -bios /usr/share/ovmf/OVMF.fd -drive format=raw,file=disk.img -net none
+</div></code></pre>
+<p>Para entender esta primera parte debemos entender que es un handle y un protocolo:</p>
+<p>Protocolo: Es básicamente una interfaz de software. A nivel técnico, es un bloque que contiene punteros a funciones y estructuras de datos. Cada protocolo está diseñado para realizar una tarea específica y se identifica invariablemente mediante un código único e irrepetible llamado GUID (Identificador Único Global).</p>
+<p>Los protocolos definen qué es lo que se puede hacer. Por ejemplo, existe un protocolo llamado <em>SimpleFileSystem</em>. Cualquier cosa en UEFI que tenga este protocolo asociado, significa que tiene las funciones necesarias para que se pueda explorar carpetas y leer archivos dentro de él.</p>
+<p>Handle: Es el identificador que representa a una entidad física o lógica concreta de la computadora, como puede ser un puerto USB, una partición de un disco duro, una tarjeta de red o driver (entidad lógica).</p>
+<p>Los Handles actúan como &quot;contenedores&quot; donde se agrupan uno o más protocolos. Por ejemplo, el Handle que representa a un pendrive físico con formato FAT32, puede tener agrupados dentro de él, el protocolo de dispositivo de bloques (para leer sectores físicos) y el protocolo <em>SimpleFileSystem</em> (por estar formateado en FAT32).</p>
+<p>Cuando ejecutamos el comando ls, este opera sobre el handle FS0, el cual tiene asociado el protocolo <em>SimpleFileSystem</em>. El comando utiliza dicho protocolo para acceder al sistema de archivos y listar su contenido.</p>
+<p><img src="https://github.com/user-attachments/assets/f1478e2f-9ff9-49e3-b740-d515fc89e21e" alt="Salida qemu con imagen cargada"></p>
+<p>Por otro lado, el comando dh (dump handle) permite visualizar la base de datos de handles del sistema, junto con los protocolos asociados a cada uno.</p>
+<p><img src="https://github.com/user-attachments/assets/6d7c358b-969d-4586-b62b-b9392aceffcf" alt="Salida dh"></p>
+<p>Entre los protocolos podemos observar resaltado en verde <em>SimpleFileSystem</em> que fue el que usa el comando <code>ls</code></p>
+<p><img src="https://github.com/user-attachments/assets/8887e2cd-a771-4fbc-a3d6-8173939388c9" alt="Fin salida dh"></p>
+<p>El comando set permite definir y gestionar variables de entorno dentro de la UEFI Shell. Estas variables son volátiles y existen únicamente durante la ejecución de la sesión, a diferencia de las variables UEFI almacenadas en NVRAM. Ale ejecutar <code>set TestSeguridad &quot;Hola UEFI&quot;</code> crea una variable de prueba, mientras que <code>set -v</code> permite visualizar las variables de entornos actualmente establecidas.</p>
+<p><img src="https://github.com/user-attachments/assets/49752ea7-3332-461c-a510-7f3ccf50f08a" alt="Variables de entorno shell UEFI"></p>
+<p><code>dmpstore</code> es una herramienta que permite ver variables UEFI almacenadas en NVRAM. A diferencia de set, acá ya se esta interactuando con el firmware real, no con la shell.</p>
+<p><img src="https://github.com/user-attachments/assets/6ae2477e-d41a-4f58-a162-1bfbb5646399" alt="Salida dmpstore"></p>
+<p>De la salida podemos observar que la variable tiene los siguientes atributos:</p>
+<p>NV: Non Volatile (persiste entre reinicios)
+BS: accesible durante Boot Services
+RT: accesible en Runtime (post-boot)</p>
+<p>Ademas la variable esta seteada como: <code>00 00 01 00 02 00</code></p>
+<p>Estos son enteros de 16 bits en little endian, por lo tanto se traduce como:</p>
+<p><code>BootOrder = [Boot0000, Boot0001, Boot0002]</code></p>
+<p>Esto es el orden en el que se va a intentar arrancar, primero Boot0000, si falla Boot0001, luego Boot0002</p>
+<p>Ademas hay otra variable que indica que arranque se utilizo actualmente, indica <code>Boot0002</code> que corresponde justamente a la shell:</p>
+<p><img src="https://github.com/user-attachments/assets/202b084e-f1a4-407d-9d83-673da9e40c02" alt="Current Boot"></p>
+<p>Al ejecutar el comando <code>memmap</code> podemos observar distintos rangos de memoria RAM. Cada rango tiene:</p>
+<ul>
+<li>Tipo: Indica el proposito de dicho rango</li>
+<li>Dirección de inicio-Dirección final</li>
+<li>Cantidad de paginas: cantidad de paginas que ocupa (cada pagina mide 4KB).</li>
+<li>Atributos</li>
+</ul>
+<p><img src="https://github.com/user-attachments/assets/5f48a364-7798-4a2c-977f-581fdba509f8" alt="memmap"></p>
+<p>Los tipos pueden ser:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Tipo de Memoria</th>
+<th style="text-align:center">Significado y Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Reserved</td>
+<td style="text-align:center">Memoria que el firmware o el hardware reserva para sí mismo. El sistema operativo no debería tocarla.</td>
+</tr>
+<tr>
+<td style="text-align:center">LoaderCode/Data</td>
+<td style="text-align:center">Memoria utilizada por el cargador del SO.</td>
+</tr>
+<tr>
+<td style="text-align:center">BS_Code / BS_Data</td>
+<td style="text-align:center">Boot Services. Es memoria usada por drivers y aplicaciones durante el arranque. Se libera y queda disponible para el SO una vez que este toma el control total.</td>
+</tr>
+<tr>
+<td style="text-align:center">RT_Code / RT_Data</td>
+<td style="text-align:center">Runtime Services. Es memoria que persiste incluso después de que el sistema operativo ha cargado. Aquí residen funciones críticas como el acceso a variables de la NVRAM o el reloj del sistema.</td>
+</tr>
+<tr>
+<td style="text-align:center">ACPI_Recl / NVS</td>
+<td style="text-align:center">Tablas ACPI que describen el hardware al SO. La parte Recl (Reclaimable) puede ser reutilizada por el SO tras leer las tablas.</td>
+</tr>
+<tr>
+<td style="text-align:center">Available</td>
+<td style="text-align:center">RAM pura y libre. Es el espacio donde el sistema operativo y tus programas pueden ejecutarse sin restricciones.</td>
+</tr>
+<tr>
+<td style="text-align:center">MMIO / MMIO_Port</td>
+<td style="text-align:center">Memoria mapeada para entrada/salida. No es RAM física real, sino &quot;direcciones&quot; que se comunican directamente con el hardware (como tu tarjeta de video o red).</td>
+</tr>
+</tbody>
+</table>
+<p>Las regiones RT_Code (Runtime Services Code) son extremadamente sensibles. Si un malware logra inyectarse ahí, puede sobrevivir incluso después de que se formatee el disco y se reinstale el SO, ya que reside en el mapa de memoria del firmware del disco duro, no en el almacenamiento del SO.</p>
+<h3 id="segunda-parte-desarrollo-compilación-y-análisis-de-seguridad">Segunda parte: Desarrollo, compilación y análisis de seguridad</h3>
+<p>Para esta fase del proyecto, desarrollamos una aplicación nativa para el entorno UEFI (Unified Extensible Firmware Interface) escrita en lenguaje C. A diferencia de un programa convencional, este código se ejecuta en una etapa de <em>bare metal</em>, es decir, antes de que cualquier sistema operativo haya tomado el control del hardware.</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;efi.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;efilib.h&gt;</span></span>
+
+EFI_STATUS <span class="hljs-title function_">efi_main</span><span class="hljs-params">(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)</span> {
+  InitializeLib(ImageHandle, SystemTable);
+  SystemTable-&gt;ConOut-&gt;OutputString(SystemTable-&gt;ConOut,
+                                    <span class="hljs-string">L&quot;Iniciando analisis de seguridad...\r\n&quot;</span>);
+  <span class="hljs-comment">// Inyección de un software breakpoint (INT3)</span>
+  <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> code[] = {<span class="hljs-number">0xCC</span>};
+  <span class="hljs-keyword">if</span> (code[<span class="hljs-number">0</span>] == <span class="hljs-number">0xCC</span>) {
+    SystemTable-&gt;ConOut-&gt;OutputString(SystemTable-&gt;ConOut,
+                                      <span class="hljs-string">L&quot;Breakpoint estatico alcanzado.\r\n&quot;</span>);
+  }
+  <span class="hljs-keyword">return</span> EFI_SUCCESS;
+}
+</div></code></pre>
+<p>Dado que el programa se ejecutará en un entorno previo al arranque de un sistema operativo, el programa debe ser autosuficiente, por lo tanto debe interactuar directamente con las tablas de servicios que el firmware mantiene en memoria estos son los protocolos estandarizado de UEFI.</p>
+<p>La compilación se gestionó mediante objetivos configurados en un archivo Makefile que posteriormente son ejecutados por el programa make</p>
+<p>Tras obtener el ejecutable en formato <code>.efi</code>, procedimos a su análisis mediante Ghidra, una suite de ingeniería inversa de código abierto desarrollada por la NSA. El foco del análisis se centró en la función <code>efi_main</code>, el punto de entrada estándar donde el firmware transfiere el control a nuestra aplicación.</p>
+<p>Podemos observar el código ensamblador de nuestro programa:</p>
+<p><img src="https://github.com/user-attachments/assets/fc28fc2a-5ec8-4e4f-a500-ddfb73b454bb" alt="Ensamblador"></p>
+<p>Ademas Ghidra proporciona decompilador que intenta reconstruir el codigo original a partir del ensamblador</p>
+<p><img src="https://github.com/user-attachments/assets/5785872f-e6a5-4a04-9b22-50528a3201eb" alt="Decompiler"></p>
+<p>Si bien el descompilador de Ghidra facilita la comprensión de la lógica, al reconstruir una aproximación en lenguaje C. Las optimizaciones aplicadas durante la descompilación pueden omitir comprobaciones críticas o representar erróneamente tipos de datos, especialmente en entornos de bajo nivel como UEFI donde la gestión de punteros y estructuras de sistema es manual.</p>
+<h4 id="técnicas-de-anti-debugging-detección-de-software-breakpoints-0xcc">Técnicas de Anti-Debugging: Detección de Software Breakpoints (0xCC)</h4>
+<p>En el desarrollo de malware y software protegido, la inclusión de verificaciones basadas en el valor 0xCC tiene como objetivo detectar si un analista de seguridad está inspeccionando el código en tiempo de ejecución.</p>
+<p>En la arquitectura x86-64, el byte 0xCC corresponde a la instrucción INT 3. Esta es la herramienta fundamental que utilizan los depuradores (como GDB) para pausar la ejecución de un programa. Cuando un analista coloca un &quot;punto de interrupción&quot; o breakpoint, el depurador reemplaza temporalmente el byte original de una instrucción por un 0xCC</p>
+<p>Los autores de malware implementan comprobaciones similares a la realizada en nuestro programa en C para verificar su propia integridad, por ejemplo hacer que el programa recorra sus propias secciones de código (.text) buscando el byte 0xCC, y si lo encuentra, asume que ha sido manipulado por un depurador. Luego al detectar la presencia de un breakpoint, el malware puede ejecutar rutinas de evasión, como finalizar su proceso, corromper su propio código o mostrar mensajes falsos para engañar al investigador.</p>
+<p>En nuestro experimento, el uso de <code>unsigned char code[] = {0xCC}</code> funciona como un testigo de memoria. Si bien no detiene el programa porque se trata como un dato y no como una instrucción ejecutable, sirve para demostrar cómo estas firmas pueden ser detectadas tanto por el software mismo como por herramientas de análisis estático como Ghidra</p>
+<p>Desde la perspectiva del análisis, estas comprobaciones presentan dos desafíos:</p>
+<ol>
+<li>
+<p>Ofuscación: En el descompilador de Ghidra, este valor puede aparecer erróneamente como -52 debido a la interpretación de tipos con signo, lo que podría ocultar la verdadera intención del código ante un analista inexperto.</p>
+</li>
+<li>
+<p>Optimización: Como se observó en nuestro análisis, los compiladores modernos pueden optimizar o eliminar estas condiciones si detectan que son constantes, lo que obliga al analista a recurrir siempre al código ensamblador (Listing) para confirmar la existencia de la protección.</p>
+</li>
+</ol>
+<h3 id="tercera-parte-ejecución-en-hardware-físico-bare-metal">Tercera parte: Ejecución en Hardware Físico (Bare Metal)</h3>
+<p>Para esta ultima parte vamos a instalar UEFI Shell de TianoCore y ejecutaremos el programa en la computadora usando un pendrive</p>
+<p>Usando lsblk identificamos nuestro pendrive y sus particiones (En mi caso es /dev/sda1.)</p>
+<pre class="hljs"><code><div>lsblk
+</div></code></pre>
+<p>Lo montamos en una carpeta, en nuestro caso en /mnt:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">sudo</span> mount /dev/sda1 /mnt
+</div></code></pre>
+<p>Creamos la estructura estandarizada de directorios</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /mnt/EFI/BOOT
+</div></code></pre>
+<p>Descargamos dentro la UEFI Shell de TianoCore</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">sudo</span> wget
+https://github.com/tianocore/edk2/raw/UDK2018/ShellBinPkg/UefiShell/X64/Shell.efi -O
+/mnt/EFI/BOOT/BOOTX64.EFI
+</div></code></pre>
+<p>y finalmente guardamos el programa dentro del pendrive y lo desmontamos</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cp</span> aplicacion.efi /mnt
+<span class="hljs-built_in">sudo</span> <span class="hljs-built_in">sync</span>
+<span class="hljs-built_in">sudo</span> umount /mnt
+</div></code></pre>
+<p>Booteamos el pendrive y dentro de la UEFI Shell ejecutamos el programa:</p>
+<p><img src="https://github.com/user-attachments/assets/882bb7e1-e703-47a6-bf50-be508f996755" alt="Ejecución del programa"></p>
+
+</body>
+</html>

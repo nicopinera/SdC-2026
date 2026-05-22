@@ -237,8 +237,9 @@ Cuando conectas un hardware (USB, PCI, etc.) y el kernel no encuentra un _driver
 
 En sintesis, si el driver de un dispositivo no está disponible, el sistema no puede controlar correctamente ese hardware. Como consecuencia, el dispositivo puede no funcionar o tener funcionalidad limitada, por ejemplo no tener Wi-Fi, sonido o aceleración gráfica.
 
-> [!NOTE]
-> 4. Correr `hwinfo` en una PC real con hardware real y agregar la URL de la información de hardware en el reporte (Exclusivo Windows).
+El entorno de trabajo de Juana es un WSL por lo tanto se ejecutó `hwinfo` dentro del subsistema Linux. En este contexto el hardware detectado corresponde al kernel virtualizado de WSL, no al hardware físico directo. La salida completa puede consultarse en el siguiente enlace:  
+> [Ver resultado de hwinfo](https://gist.github.com/juanapucheta/eaaea1cc4f4a09024d32e6a8eef85e76)
+
 
 ### Firma del modulo de kernel
 
