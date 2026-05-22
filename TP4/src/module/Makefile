@@ -1,5 +1,7 @@
 obj-m +=  mimodulo.o
 
+.PHONY: generate_key sign_module registry_cert
+
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
@@ -17,3 +19,22 @@ compare:
 	@echo "Diferencias entre Nico y Juana"  >> reporte.txt
 	- diff mods_nico.txt mods_juana.txt  >> reporte.txt
 	@rm mods_julian.txt mods_juana.txt mods_nico.txt
+
+generate_key:
+	@openssl req -new -x509 -newkey rsa:2048 \
+	-keyout MOK.priv \
+	-outform DER \
+	-out MOK.der \
+	-nodes \
+	-days 36500 \
+	-subj "/CN=BareMetalGuys/"
+
+sign_module: generate_key
+	/usr/src/linux-headers-$(shell uname -r)/scripts/sign-file \
+	sha256 \
+	MOK.priv \
+	MOK.der \
+	mimodulo.ko
+
+register_cert:
+	@sudo mokutil --import MOK.der

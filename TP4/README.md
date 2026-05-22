@@ -45,6 +45,7 @@
   - [Resultados](#resultados)
     - [CheckInstall](#checkinstall)
       - [Creación de un paquete para Ubuntu con CheckInstall](#creación-de-un-paquete-para-ubuntu-con-checkinstall)
+    - [Acciones de seguridad en el kernel](#acciones-de-seguridad-en-el-kernel)
     - [Funciones de un programa vs. un módulo](#funciones-de-un-programa-vs-un-módulo)
       - [Programa](#programa)
       - [Módulo](#módulo)
@@ -52,6 +53,12 @@
     - [Espacio de datos](#espacio-de-datos)
     - [Drivers y /dev](#drivers-y-dev)
     - [Módulos de Kernel](#módulos-de-kernel)
+    - [Módulos cargados entre los distintos integrantes del grupo](#módulos-cargados-entre-los-distintos-integrantes-del-grupo)
+    - [Módulos disponibles pero no cargados](#módulos-disponibles-pero-no-cargados)
+    - [Firma del modulo de kernel](#firma-del-modulo-de-kernel)
+      - [Que pasa si ahora quiero agregar el modulo teniendo secure boot activado?](#que-pasa-si-ahora-quiero-agregar-el-modulo-teniendo-secure-boot-activado)
+    - [Carga y descarga del modulo](#carga-y-descarga-del-modulo)
+    - [Módulos cargados en un WSL](#módulos-cargados-en-un-wsl)
     - [Syscall](#syscall)
     - [Segmentation Fault](#segmentation-fault)
     - [Consecuencia principal del parche de Microsoft sobre GRUB](#consecuencia-principal-del-parche-de-microsoft-sobre-grub)
@@ -104,6 +111,12 @@ sudo checkinstall
 En lugar de utilizar `sudo make install`, se invoca a **checkinstall**. Esta herramienta ejecutará las instrucciones de instalación del Makefile dentro de un entorno controlado. Durante la ejecución, el administrador debe interactuar con la terminal para definir la identidad del paquete: descripción, nombre del paquete, versión y arquitectura.
 
 ![Ejecución del paquete instalado](https://github.com/user-attachments/assets/865416ea-6d9e-4003-8e93-8f9108d58856)
+
+### Acciones de seguridad en el kernel
+
+Como bien sabemos a esta altura de la materia, los procesos tienen distintos niveles de privilegios (del anillo 0 al 3), siendo que generalmente el sistema operativo solamente ocupa dos de esos cuatro niveles posibles: el Anillo 0 (Modo Kernel o Supervisor) y el Anillo 3 (Modo Usuario). Los módulos del kernel se ejecutan en el Anillo 0; por lo tanto, si un software malicioso logra cargarse como módulo, pasa a tener este nivel máximo de privilegio, permitiéndole manipular directamente las estructuras de datos de la memoria del núcleo, interceptar llamadas al sistema (como las tablas SSDT o Syscall) y alterar las respuestas del sistema operativo para ocultar procesos, archivos o conexiones de red, volviéndose invisible para las herramientas de seguridad tradicionales que corren en el espacio de usuario.
+
+Para evitar que un módulo malicioso se cargue, existe Secure Boot. Esta es una característica del firmware UEFI que funciona como una cadena de confianza criptográfica desde el arranque; impide la ejecución de cualquier cargador de arranque (bootloader) o kernel que no esté firmado digitalmente por una autoridad de confianza. Además, si el sistema operativo tiene el modo de verificación estricta activado, **imposibilita la carga de módulos de kernel que no tengan una firma válida**, garantizando así la autenticidad e integridad del código antes de permitirle el acceso al Anillo 0.
 
 ### Funciones de un programa vs. un módulo
 
@@ -182,21 +195,102 @@ Al comparar los resultados de `modinfo` entre nuestro módulo de desarrollo (`mi
 2. **Origen y ubicación**: el módulo del sistema se encuentra en `/lib/modules`; esto significa que el módulo es parte del árbol oficial de código fuente de Linux (_in-tree_). Nuestro módulo es un módulo _out-of-tree_, compilado de forma independiente al código fuente principal del kernel.
 3. **Alias de dispositivos**: el módulo del sistema tiene múltiples alias, lo que permite que el kernel cargue el módulo automáticamente cuando una aplicación solicita un algoritmo de cifrado específico. Nuestro módulo no tiene alias, por lo que solo puede ser cargado manualmente mediante el nombre del archivo.
 
-> [!NOTE]
->
-> 1. Revisar la bibliografía para impulsar acciones que permitan mejorar la seguridad del kernel, concretamente: evitando cargar módulos que no estén firmados (¿rootkits?).
-> 2. ¿Qué drivers/módulos están cargados en sus propias PC? Comparen las salidas con las computadoras de cada integrante del grupo. Expliquen las diferencias. Carguen un txt con la salida de cada integrante en el repo y pongan un diff en el informe.
-> 3. ¿Cuáles no están cargados pero están disponibles? ¿Qué pasa cuando el driver de un dispositivo no está disponible?
-> 4. Correr `hwinfo` en una PC real con hardware real y agregar la URL de la información de hardware en el reporte (Exclusivo Windows).
-> 5. ¿Se animan a intentar firmar un módulo de kernel y documentar el proceso? [Guía de referencia](https://askubuntu.com/questions/770205/how-to-sign-kernel-modules-with-sign-file).
-> 6. Agregar evidencia de la compilación, carga y descarga de su propio módulo imprimiendo el nombre del equipo en los registros del kernel (no deben tener _Secure Boot_ activado).
-> 7. ¿Qué pasa si mi compañero con _Secure Boot_ habilitado intenta cargar un módulo firmado por mí?
+### Módulos cargados entre los distintos integrantes del grupo
 
+Para realizar la comparación de los módulos cargados entre los distintos participantes, cada uno ejecuto el comando `lsmod` y redirigió su salida estándar a un archivo `txt`:
+
+```bash
+lsmod > lsmod_julian.txt
+```
+Luego se desarrollo un target en make para a partir del resultado de `lsmod` obtener unicamente los nombres de los módulos y ejecutar el `diff` entre los resultados de los distintos integrantes del grupo y redirigir la salida estándar a archivo `reporte.txt`
+
+```bash
+make compare
+```
+
+De manera resumida los resultados mas relevantes son:
+
+Entre Julian y Nico:
+
+Julian tiene módulos de Bluetooth, Wi-Fi Realtek y funciones ASUS (`bluetooth`, `rtw88_*`, `asus_wmi`), además de módulos de firewall/NAT (`nf_*`, `xt_*`). Esto debido a que Julian tiene una placa madre con Wifi y Bluetooth integrado.
+Nico tiene módulos de diagnóstico de red (`tcp_diag`, `udp_diag`), webcam (`uvcvideo`) y virtualización AMD (`kvm_amd`).
+
+Entre Julian y Juana:
+
+Julian posee muchos más módulos multimedia y de hardware: GPU AMD (`amdgpu`), audio (`snd_*`), NVMe (`nvme*`) y Wi-Fi.
+Juana al haber corrido el comando en una maquina virtual tiene una configuración más orientada a red/virtualización (`bridge`, `tun`, `br_netfilter`) y usa virtualización Intel (`kvm_intel`).
+
+Muchos módulos se cargan dinámicamente solo cuando el sistema o un dispositivo los necesita, por eso `lsmod` puede variar bastante entre computadoras.
+
+### Módulos disponibles pero no cargados
+
+Para ver los módulos disponibles pero no cargados son muchísimos, para verlos se utiliza el comando
+
+```bash
+find /lib/modules/$(uname -r) -type f | grep '\.ko'
+```
 Cuando conectas un hardware (USB, PCI, etc.) y el kernel no encuentra un _driver_ compatible, ocurren los siguientes eventos técnicos:
 
 1. **Identificación sin control (udev)**: el bus detecta eléctricamente el dispositivo. El sistema lee los identificadores Vendor ID y Product ID. El dispositivo aparecerá en la lista, pero no funcionará.
 2. **Ausencia de interfaz en /dev**: los _drivers_ crean un archivo especial en `/dev`. Si el _driver_ no está disponible, no se crea el nodo de dispositivo y las aplicaciones fallan (_Device not found_).
 3. En el log del sistema (_dmesg_), se observa que el hardware fue detectado, pero no aparecerán los mensajes típicos de "driver assigned" o "initialized".
+
+En sintesis, si el driver de un dispositivo no está disponible, el sistema no puede controlar correctamente ese hardware. Como consecuencia, el dispositivo puede no funcionar o tener funcionalidad limitada, por ejemplo no tener Wi-Fi, sonido o aceleración gráfica.
+
+> [!NOTE]
+> 4. Correr `hwinfo` en una PC real con hardware real y agregar la URL de la información de hardware en el reporte (Exclusivo Windows).
+
+### Firma del modulo de kernel
+
+Para firmar un modulo, lo primero que tenemos que hacer es generar una clave privada (`MOK.priv`) y un certificado (`MOK.der`) utilizando openssl:
+
+```bash
+openssl req -new -x509 -newkey rsa:2048 keyout MOK.priv outform DER -out MOK.der -nodes -days 36500 -subj "/CN=BareMetalGuys/"
+```
+
+Luego utilizamos sign-file para firmar el modulo, pasando como argumentos la clave privada y el certificado generados anteriormente
+
+```bash
+/usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 MOK.priv MOK.der mimodulo.ko
+```
+
+![Modulo firmado](https://github.com/user-attachments/assets/5d9ef466-4e63-4b68-9332-28b07a6c8641)
+
+>[!NOTE]
+> MOK (Machine Owner Key) es un mecanismo utilizado junto con Secure Boot que permite al dueño de la máquina agregar sus propios certificados de confianza. Esto posibilita cargar módulos del kernel, drivers o kernels personalizados firmados con claves propias, incluso cuando Secure Boot está habilitado.
+
+#### Que pasa si ahora quiero agregar el modulo teniendo secure boot activado?
+
+Para poder cargar el modulo con secure boot, no basta con solamente tener firmado el modulo, sino que debemos importar el certificado del firmante del modulo:
+
+```bash
+sudo mokutil --import MOK.der
+```
+Luego de correr este comando tenemos que reiniciar la computadora, dado que este mecanismo de certificados funciona a nivel Firmware (UEFI). Por lo tanto mientras que no se reinicia la computadora el certificado está pendiente de ser agregado. Cuando se reinicia, en una de las etapas de UEFI, MOK Manager agrega el certificado como variable EFI.
+
+### Carga y descarga del modulo
+
+Para cargar el modulo hacemos:
+```bash
+sudo insmod mimodulo.ko
+```
+Luego podes verificar que se cargo correctamente listando todos los modulos y filtrando por el nombre:
+
+```bash
+sudo lsmod | grep mimodulo
+```
+
+Luego lo descargamos:
+```bash
+sudo rmmod mimodulo
+```
+
+![Carga-Descarga](https://github.com/user-attachments/assets/e8ec4a68-655a-4a34-9e43-9e337b8dad39)
+
+Finalmente viendo el log de mensajes del kernel observamos como se cargo y descargo el modulo del kernel:
+
+![log-kernel](https://github.com/user-attachments/assets/4100e176-6ea2-407f-b4c9-6a64c4460403)
+
 
 ### Módulos cargados en un WSL
 
@@ -204,7 +298,8 @@ A continuación se muestra la salida de `lsmod` en un entorno WSL:
 
 ![lsmod juana](https://github.com/user-attachments/assets/5b227d51-3bde-4bfe-9124-3ae6806845ce)
 
-> Nota: Al ejecutarse sobre WSL, los módulos cargados reflejan
+> [!NOTE]
+> Al ejecutarse sobre WSL, los módulos cargados reflejan
 > el kernel virtualizado de Windows, no el hardware físico directo.
 
 ### Syscall
