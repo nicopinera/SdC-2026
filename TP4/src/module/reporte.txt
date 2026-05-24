@@ -1,0 +1,370 @@
+Diferencias entre Nico y Julian
+2c2
+< af_alg
+---
+> af_packet_diag
+4,5d3
+< algif_hash
+< algif_skcipher
+9c7
+< asus_wmi
+---
+> amdxdna
+12,20d9
+< bluetooth
+< bnep
+< bridge
+< btbcm
+< btintel
+< btmtk
+< btrtl
+< btusb
+< ccm
+23,24d11
+< cfg80211
+< cmac
+33,34d19
+< ee1004
+< eeepc_wmi
+43a29
+> inet_diag
+49d34
+< ip_set
+54a40
+> kvm_amd
+56,57d41
+< libarc4
+< llc
+59d42
+< mac80211
+62c45
+< mfd_aaeon
+---
+> mptcp_diag
+64,67c47
+< nf_conntrack
+< nf_defrag_ipv4
+< nf_defrag_ipv6
+< nf_nat
+---
+> netlink_diag
+69,71d48
+< nf_tables
+< nft_chain_nat
+< nft_compat
+73d49
+< nvme
+81d56
+< platform_profile
+84c59
+< qrtr
+---
+> psmouse
+86a62
+> raw_diag
+89,93d64
+< rfcomm
+< rtw88_8821c
+< rtw88_8821ce
+< rtw88_core
+< rtw88_pci
+94a66
+> serio_raw
+120,121c92,93
+< sparse_keymap
+< stp
+---
+> spd5118
+> tcp_diag
+122a95
+> udp_diag
+124a98,99
+> uvc
+> uvcvideo
+125a101,105
+> videobuf2_common
+> videobuf2_memops
+> videobuf2_v4l2
+> videobuf2_vmalloc
+> videodev
+128,129c108
+< xfrm_algo
+< xfrm_user
+---
+> xsk_diag
+131,134d109
+< xt_addrtype
+< xt_conntrack
+< xt_MASQUERADE
+< xt_set
+Diferencias entre Julian y Juana
+1,9c1
+< aesni_intel
+< af_alg
+< ahci
+< algif_hash
+< algif_skcipher
+< amd_atl
+< amdgpu
+< amdxcp
+< asus_wmi
+---
+> ac
+11,13c3
+< binfmt_misc
+< bluetooth
+< bnep
+---
+> battery
+15,44c5,7
+< btbcm
+< btintel
+< btmtk
+< btrtl
+< btusb
+< ccm
+< ccp
+< cec
+< cfg80211
+< cmac
+< dmi_sysfs
+< drm_buddy
+< drm_display_helper
+< drm_exec
+< drm_panel_backlight_quirks
+< drm_suballoc_helper
+< drm_ttm_helper
+< edac_mce_amd
+< ee1004
+< eeepc_wmi
+< efi_pstore
+< ghash_clmulni_intel
+< gpio_amdpt
+< gpu_sched
+< hid
+< hid_generic
+< i2c_algo_bit
+< i2c_piix4
+< i2c_smbus
+< input_leds
+---
+> br_netfilter
+> configfs
+> crc32c_intel
+47,49d9
+< ipmi_devintf
+< ipmi_msghandler
+< ip_set
+52,53d11
+< joydev
+< k10temp
+55,56c13
+< libahci
+< libarc4
+---
+> kvm_intel
+58,93d14
+< lp
+< mac80211
+< mac_hid
+< mc
+< mfd_aaeon
+< msr
+< nf_conntrack
+< nf_defrag_ipv4
+< nf_defrag_ipv6
+< nf_nat
+< nfnetlink
+< nf_tables
+< nft_chain_nat
+< nft_compat
+< nls_iso8859_1
+< nvme
+< nvme_auth
+< nvme_core
+< nvme_fabrics
+< nvme_keyring
+< overlay
+< parport
+< parport_pc
+< platform_profile
+< polyval_clmulni
+< ppdev
+< qrtr
+< r8169
+< rapl
+< rc_core
+< realtek
+< rfcomm
+< rtw88_8821c
+< rtw88_8821ce
+< rtw88_core
+< rtw88_pci
+95,120d15
+< snd
+< snd_hda_codec
+< snd_hda_codec_alc662
+< snd_hda_codec_atihdmi
+< snd_hda_codec_generic
+< snd_hda_codec_hdmi
+< snd_hda_codec_realtek_lib
+< snd_hda_core
+< snd_hda_intel
+< snd_hrtimer
+< snd_hwdep
+< snd_intel_dspcfg
+< snd_intel_sdw_acpi
+< snd_pcm
+< snd_rawmidi
+< snd_seq
+< snd_seq_device
+< snd_seq_dummy
+< snd_seq_midi
+< snd_seq_midi_event
+< snd_timer
+< snd_ump
+< snd_usb_audio
+< snd_usbmidi_lib
+< soundcore
+< sparse_keymap
+122,134c17,18
+< ttm
+< unix_diag
+< usbhid
+< video
+< wmi
+< wmi_bmof
+< xfrm_algo
+< xfrm_user
+< x_tables
+< xt_addrtype
+< xt_conntrack
+< xt_MASQUERADE
+< xt_set
+---
+> tls
+> tun
+Diferencias entre Nico y Juana
+1,7c1
+< aesni_intel
+< af_packet_diag
+< ahci
+< amd_atl
+< amdgpu
+< amdxcp
+< amdxdna
+---
+> ac
+9,30c3,7
+< binfmt_misc
+< ccp
+< cec
+< dmi_sysfs
+< drm_buddy
+< drm_display_helper
+< drm_exec
+< drm_panel_backlight_quirks
+< drm_suballoc_helper
+< drm_ttm_helper
+< edac_mce_amd
+< efi_pstore
+< ghash_clmulni_intel
+< gpio_amdpt
+< gpu_sched
+< hid
+< hid_generic
+< i2c_algo_bit
+< i2c_piix4
+< i2c_smbus
+< inet_diag
+< input_leds
+---
+> battery
+> bridge
+> br_netfilter
+> configfs
+> crc32c_intel
+33,34d9
+< ipmi_devintf
+< ipmi_msghandler
+37,38d11
+< joydev
+< k10temp
+40,64c13,14
+< kvm_amd
+< libahci
+< lp
+< mac_hid
+< mc
+< mptcp_diag
+< msr
+< netlink_diag
+< nfnetlink
+< nls_iso8859_1
+< nvme_auth
+< nvme_core
+< nvme_fabrics
+< nvme_keyring
+< overlay
+< parport
+< parport_pc
+< polyval_clmulni
+< ppdev
+< psmouse
+< r8169
+< rapl
+< raw_diag
+< rc_core
+< realtek
+---
+> kvm_intel
+> llc
+66,109c16,18
+< serio_raw
+< snd
+< snd_hda_codec
+< snd_hda_codec_alc662
+< snd_hda_codec_atihdmi
+< snd_hda_codec_generic
+< snd_hda_codec_hdmi
+< snd_hda_codec_realtek_lib
+< snd_hda_core
+< snd_hda_intel
+< snd_hrtimer
+< snd_hwdep
+< snd_intel_dspcfg
+< snd_intel_sdw_acpi
+< snd_pcm
+< snd_rawmidi
+< snd_seq
+< snd_seq_device
+< snd_seq_dummy
+< snd_seq_midi
+< snd_seq_midi_event
+< snd_timer
+< snd_ump
+< snd_usb_audio
+< snd_usbmidi_lib
+< soundcore
+< spd5118
+< tcp_diag
+< ttm
+< udp_diag
+< unix_diag
+< usbhid
+< uvc
+< uvcvideo
+< video
+< videobuf2_common
+< videobuf2_memops
+< videobuf2_v4l2
+< videobuf2_vmalloc
+< videodev
+< wmi
+< wmi_bmof
+< xsk_diag
+< x_tables
+---
+> stp
+> tls
+> tun

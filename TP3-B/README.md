@@ -38,15 +38,15 @@ Durante mucho tiempo, este rol fue cumplido por el BIOS (Basic Input/Output Syst
 
 Este trabajo práctico tiene como objetivo explorar este entorno desde una perspectiva técnica y práctica. Se desarrolla una aplicación nativa en C para UEFI que se ejecut en un entorno emulado con QEMU/OVMF y en hardware físico real (bare metal). A lo largo del trabajo se abordarán también conceptos de seguridad relevantes, como las técnicas de anti-debugging basadas en la detección del byte 0xCC (INT 3), que ilustran cómo el entorno pre-OS puede ser tanto un vector de ataque como un campo de análisis para la seguridad informática.
 
-
 ## Marco teórico
 
-El proceso de inicialización de UEFI se enmarca dentro de la especificación PI (Platform Initialization), que define las etapas secuenciales por las cuales el firmware inicializa progresivamente el hardware antes de transferir el control al cargador del sistema operativo. Este proceso expone dos categorías de servicios fundamentales: los Boot Services, y los Runtime Services. Siendo los Boots Service aquellos disponible únicamente durante el arranque. Entre sus funciones principales se encuentran: Gestión de memoria, gestión de handles y protocolos, gestión de drivers e imágenes y eventos y temporizadores. 
+El proceso de inicialización de UEFI se enmarca dentro de la especificación PI (Platform Initialization), que define las etapas secuenciales por las cuales el firmware inicializa progresivamente el hardware antes de transferir el control al cargador del sistema operativo. Este proceso expone dos categorías de servicios fundamentales: los Boot Services, y los Runtime Services. Siendo los Boots Service aquellos disponible únicamente durante el arranque. Entre sus funciones principales se encuentran: Gestión de memoria, gestión de handles y protocolos, gestión de drivers e imágenes y eventos y temporizadores.
 Por otro lado los Runtime service son servicios que persisten luego de que el SO tome el control, incluso una vez que los Boot Services ya no están disponibles. Sus funciones son: leer, escribir y eliminar variables persistentes del firmware que sobreviven entre reinicios, obtener y configurar la hora del hardware (RTC), solicitar al firmware un reinicio, apagado o cambio de modo y registrar fallos del sistema
 
-Respecto UEFI y PI podemos diferenciar dos conceptos fundamentales: UEFI es puramente una especificación de interfaz. Define las APIs, estructuras de datos y el entorno pre-OS mediante el cual interactúan el firmware, los componentes de hardware y los cargadores del sistema operativo; UEFI define qué servicios están disponibles y cómo se accede a ellos. En cambio  PI (Platform Initialization) es la arquitectura interna del firmware. Define cómo se construye la plataforma desde el momento del reset del hardware, estableciendo fases de control bien definidas hasta que se crea el entorno UEFI para el sistema operativo.
+Respecto UEFI y PI podemos diferenciar dos conceptos fundamentales: UEFI es puramente una especificación de interfaz. Define las APIs, estructuras de datos y el entorno pre-OS mediante el cual interactúan el firmware, los componentes de hardware y los cargadores del sistema operativo; UEFI define qué servicios están disponibles y cómo se accede a ellos. En cambio PI (Platform Initialization) es la arquitectura interna del firmware. Define cómo se construye la plataforma desde el momento del reset del hardware, estableciendo fases de control bien definidas hasta que se crea el entorno UEFI para el sistema operativo.
 
-Etapas de PI: 
+Etapas de PI:
+
 - SEC (Security): Es la fase inicial pre-memoria. Establece un contexto mínimo de ejecución, configurando la memoria caché del procesador para usarla como RAM temporal (Cache-as-RAM) antes de que la memoria principal esté disponible. También establece la raíz de confianza inicial del sistema.
 - PEI (Pre-EFI Initialization): Tiene como objetivo inicializar el hardware crítico mínimo, como el controlador de memoria principal y partes del chipset. También determina el modo de arranque y pasa la información descubierta a la siguiente fase mediante estructuras llamadas Hand-Off Blocks (HOBs).
 - DXE (Driver Execution Environment): Es el núcleo de la inicialización. Un componente llamado DXE Dispatcher carga y ejecuta drivers en un orden determinado por sus dependencias lógicas. En esta fase se instalan la mayoría de las abstracciones de hardware, buses como PCI o USB, y los servicios centrales de UEFI.
@@ -69,6 +69,7 @@ Dado que UEFI no trabaja directamente con dispositivos crudos, sino con abstracc
 dd if=/dev/zero of=disk.img bs=1M count=64
 mkfs.vfat -F 32 disk.img
 ```
+
 Luego se ejecuta qemu especificando la imagen:
 
 ```bash
@@ -79,13 +80,13 @@ Para entender esta primera parte debemos entender que es un handle y un protocol
 
 Protocolo: Es básicamente una interfaz de software. A nivel técnico, es un bloque que contiene punteros a funciones y estructuras de datos. Cada protocolo está diseñado para realizar una tarea específica y se identifica invariablemente mediante un código único e irrepetible llamado GUID (Identificador Único Global).
 
-Los protocolos definen qué es lo que se puede hacer. Por ejemplo, existe un protocolo llamado *SimpleFileSystem*. Cualquier cosa en UEFI que tenga este protocolo asociado, significa que tiene las funciones necesarias para que se pueda explorar carpetas y leer archivos dentro de él.
+Los protocolos definen qué es lo que se puede hacer. Por ejemplo, existe un protocolo llamado _SimpleFileSystem_. Cualquier cosa en UEFI que tenga este protocolo asociado, significa que tiene las funciones necesarias para que se pueda explorar carpetas y leer archivos dentro de él.
 
 Handle: Es el identificador que representa a una entidad física o lógica concreta de la computadora, como puede ser un puerto USB, una partición de un disco duro, una tarjeta de red o driver (entidad lógica).
 
-Los Handles actúan como "contenedores" donde se agrupan uno o más protocolos. Por ejemplo, el Handle que representa a un pendrive físico con formato FAT32, puede tener agrupados dentro de él, el protocolo de dispositivo de bloques (para leer sectores físicos) y el protocolo *SimpleFileSystem* (por estar formateado en FAT32).
+Los Handles actúan como "contenedores" donde se agrupan uno o más protocolos. Por ejemplo, el Handle que representa a un pendrive físico con formato FAT32, puede tener agrupados dentro de él, el protocolo de dispositivo de bloques (para leer sectores físicos) y el protocolo _SimpleFileSystem_ (por estar formateado en FAT32).
 
-Cuando ejecutamos el comando ls, este opera sobre el handle FS0, el cual tiene asociado el protocolo *SimpleFileSystem*. El comando utiliza dicho protocolo para acceder al sistema de archivos y listar su contenido.
+Cuando ejecutamos el comando ls, este opera sobre el handle FS0, el cual tiene asociado el protocolo _SimpleFileSystem_. El comando utiliza dicho protocolo para acceder al sistema de archivos y listar su contenido.
 
 ![Salida qemu con imagen cargada](https://github.com/user-attachments/assets/f1478e2f-9ff9-49e3-b740-d515fc89e21e)
 
@@ -93,7 +94,7 @@ Por otro lado, el comando dh (dump handle) permite visualizar la base de datos d
 
 ![Salida dh](https://github.com/user-attachments/assets/6d7c358b-969d-4586-b62b-b9392aceffcf)
 
-Entre los protocolos podemos observar resaltado en verde *SimpleFileSystem* que fue el que usa el comando `ls`
+Entre los protocolos podemos observar resaltado en verde _SimpleFileSystem_ que fue el que usa el comando `ls`
 
 ![Fin salida dh](https://github.com/user-attachments/assets/8887e2cd-a771-4fbc-a3d6-8173939388c9)
 
@@ -124,30 +125,31 @@ Ademas hay otra variable que indica que arranque se utilizo actualmente, indica 
 ![Current Boot](https://github.com/user-attachments/assets/202b084e-f1a4-407d-9d83-673da9e40c02)
 
 Al ejecutar el comando `memmap` podemos observar distintos rangos de memoria RAM. Cada rango tiene:
+
 - Tipo: Indica el proposito de dicho rango
 - Dirección de inicio-Dirección final
-- Cantidad de paginas: cantidad de paginas que ocupa (cada pagina mide 4KB). 
+- Cantidad de paginas: cantidad de paginas que ocupa (cada pagina mide 4KB).
 - Atributos
 
 ![memmap](https://github.com/user-attachments/assets/5f48a364-7798-4a2c-977f-581fdba509f8)
 
 Los tipos pueden ser:
 
-|Tipo de Memoria |Significado y Uso|
-|:--------------:|:---------------:|
-|Reserved        |Memoria que el firmware o el hardware reserva para sí mismo. El sistema operativo no debería tocarla.|
-|LoaderCode/Data | Memoria utilizada por el cargador del SO.|
-|BS_Code / BS_Data | Boot Services. Es memoria usada por drivers y aplicaciones durante el arranque. Se libera y queda disponible para el SO una vez que este toma el control total.|
-|RT_Code / RT_Data | Runtime Services. Es memoria que persiste incluso después de que el sistema operativo ha cargado. Aquí residen funciones críticas como el acceso a variables de la NVRAM o el reloj del sistema.|
-|ACPI_Recl / NVS | Tablas ACPI que describen el hardware al SO. La parte Recl (Reclaimable) puede ser reutilizada por el SO tras leer las tablas.|
-|Available       | RAM pura y libre. Es el espacio donde el sistema operativo y tus programas pueden ejecutarse sin restricciones.|
-|MMIO / MMIO_Port | Memoria mapeada para entrada/salida. No es RAM física real, sino "direcciones" que se comunican directamente con el hardware (como tu tarjeta de video o red).|
+|  Tipo de Memoria  |                                                                                        Significado y Uso                                                                                         |
+| :---------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|     Reserved      |                                              Memoria que el firmware o el hardware reserva para sí mismo. El sistema operativo no debería tocarla.                                               |
+|  LoaderCode/Data  |                                                                            Memoria utilizada por el cargador del SO.                                                                             |
+| BS_Code / BS_Data |                 Boot Services. Es memoria usada por drivers y aplicaciones durante el arranque. Se libera y queda disponible para el SO una vez que este toma el control total.                  |
+| RT_Code / RT_Data | Runtime Services. Es memoria que persiste incluso después de que el sistema operativo ha cargado. Aquí residen funciones críticas como el acceso a variables de la NVRAM o el reloj del sistema. |
+|  ACPI_Recl / NVS  |                                  Tablas ACPI que describen el hardware al SO. La parte Recl (Reclaimable) puede ser reutilizada por el SO tras leer las tablas.                                  |
+|     Available     |                                         RAM pura y libre. Es el espacio donde el sistema operativo y tus programas pueden ejecutarse sin restricciones.                                          |
+| MMIO / MMIO_Port  |                  Memoria mapeada para entrada/salida. No es RAM física real, sino "direcciones" que se comunican directamente con el hardware (como tu tarjeta de video o red).                  |
 
 Las regiones RT_Code (Runtime Services Code) son extremadamente sensibles. Si un malware logra inyectarse ahí, puede sobrevivir incluso después de que se formatee el disco y se reinstale el SO, ya que reside en el mapa de memoria del firmware del disco duro, no en el almacenamiento del SO.
 
 ### Segunda parte: Desarrollo, compilación y análisis de seguridad
 
-Para esta fase del proyecto, desarrollamos una aplicación nativa para el entorno UEFI (Unified Extensible Firmware Interface) escrita en lenguaje C. A diferencia de un programa convencional, este código se ejecuta en una etapa de *bare metal*, es decir, antes de que cualquier sistema operativo haya tomado el control del hardware.
+Para esta fase del proyecto, desarrollamos una aplicación nativa para el entorno UEFI (Unified Extensible Firmware Interface) escrita en lenguaje C. A diferencia de un programa convencional, este código se ejecuta en una etapa de _bare metal_, es decir, antes de que cualquier sistema operativo haya tomado el control del hardware.
 
 ```C
 #include <efi.h>
@@ -189,7 +191,7 @@ En el desarrollo de malware y software protegido, la inclusión de verificacione
 
 En la arquitectura x86-64, el byte 0xCC corresponde a la instrucción INT 3. Esta es la herramienta fundamental que utilizan los depuradores (como GDB) para pausar la ejecución de un programa. Cuando un analista coloca un "punto de interrupción" o breakpoint, el depurador reemplaza temporalmente el byte original de una instrucción por un 0xCC
 
-Los autores de malware implementan comprobaciones similares a la realizada en nuestro programa en C para verificar su propia integridad, por ejemplo hacer que el programa recorra sus propias secciones de código (.text) buscando el byte 0xCC, y si lo encuentra, asume que ha sido manipulado por un depurador. Luego al detectar la presencia de un breakpoint, el malware puede ejecutar rutinas de evasión, como finalizar su proceso, corromper su propio código o mostrar mensajes falsos para engañar al investigador. 
+Los autores de malware implementan comprobaciones similares a la realizada en nuestro programa en C para verificar su propia integridad, por ejemplo hacer que el programa recorra sus propias secciones de código (.text) buscando el byte 0xCC, y si lo encuentra, asume que ha sido manipulado por un depurador. Luego al detectar la presencia de un breakpoint, el malware puede ejecutar rutinas de evasión, como finalizar su proceso, corromper su propio código o mostrar mensajes falsos para engañar al investigador.
 
 En nuestro experimento, el uso de `unsigned char code[] = {0xCC}` funciona como un testigo de memoria. Si bien no detiene el programa porque se trata como un dato y no como una instrucción ejecutable, sirve para demostrar cómo estas firmas pueden ser detectadas tanto por el software mismo como por herramientas de análisis estático como Ghidra
 
@@ -197,7 +199,7 @@ Desde la perspectiva del análisis, estas comprobaciones presentan dos desafíos
 
 1. Ofuscación: En el descompilador de Ghidra, este valor puede aparecer erróneamente como -52 debido a la interpretación de tipos con signo, lo que podría ocultar la verdadera intención del código ante un analista inexperto.
 
-2. Optimización: Como se observó en nuestro análisis, los compiladores modernos pueden optimizar o eliminar estas condiciones si detectan que son constantes, lo que obliga al analista a recurrir siempre al código ensamblador (Listing) para confirmar la existencia de la protección.  
+2. Optimización: Como se observó en nuestro análisis, los compiladores modernos pueden optimizar o eliminar estas condiciones si detectan que son constantes, lo que obliga al analista a recurrir siempre al código ensamblador (Listing) para confirmar la existencia de la protección.
 
 ### Tercera parte: Ejecución en Hardware Físico (Bare Metal)
 
@@ -208,6 +210,7 @@ Usando lsblk identificamos nuestro pendrive y sus particiones (En mi caso es /de
 ```bash
 lsblk
 ```
+
 Lo montamos en una carpeta, en nuestro caso en /mnt:
 
 ```bash
@@ -239,4 +242,3 @@ sudo umount /mnt
 Booteamos el pendrive y dentro de la UEFI Shell ejecutamos el programa:
 
 ![Ejecución del programa](https://github.com/user-attachments/assets/882bb7e1-e703-47a6-bf50-be508f996755)
-

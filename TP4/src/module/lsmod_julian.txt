@@ -1,0 +1,135 @@
+Module                  Size  Used by
+unix_diag              12288  0
+xt_conntrack           12288  1
+xt_MASQUERADE          16384  1
+bridge                425984  0
+stp                    12288  1 bridge
+llc                    16384  2 bridge,stp
+xfrm_user              65536  1
+xfrm_algo              16384  1 xfrm_user
+xt_set                 20480  0
+ip_set                 61440  1 xt_set
+nft_chain_nat          12288  5
+nf_nat                 61440  2 nft_chain_nat,xt_MASQUERADE
+nf_conntrack          192512  3 xt_conntrack,nf_nat,xt_MASQUERADE
+nf_defrag_ipv6         24576  1 nf_conntrack
+nf_defrag_ipv4         12288  1 nf_conntrack
+xt_addrtype            12288  4
+nft_compat             20480  6
+nf_tables             385024  57 nft_compat,nft_chain_nat
+ccm                    20480  9
+rfcomm                 98304  4
+snd_seq_dummy          12288  0
+snd_hrtimer            12288  1
+overlay               221184  0
+qrtr                   53248  2
+cmac                   12288  2
+algif_hash             16384  1
+algif_skcipher         12288  1
+ipmi_devintf           20480  0
+af_alg                 32768  6 algif_hash,algif_skcipher
+ipmi_msghandler        94208  1 ipmi_devintf
+bnep                   32768  2
+kvm                  1445888  0
+binfmt_misc            24576  1
+irqbypass              16384  1 kvm
+nls_iso8859_1          12288  1
+amdgpu              20107264  25
+snd_hda_codec_alc662    20480  1
+snd_hda_codec_realtek_lib    65536  1 snd_hda_codec_alc662
+snd_hda_codec_atihdmi    24576  1
+snd_hda_codec_generic   122880  2 snd_hda_codec_alc662,snd_hda_codec_realtek_lib
+snd_hda_codec_hdmi     65536  1 snd_hda_codec_atihdmi
+snd_hda_intel          61440  2
+snd_usb_audio         573440  1
+snd_hda_codec         204800  6 snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec_alc662,snd_hda_codec_realtek_lib,snd_hda_codec_atihdmi
+amd_atl                69632  1
+rtw88_8821ce           12288  0
+snd_hda_core          143360  7 snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec_alc662,snd_hda_codec,snd_hda_codec_realtek_lib,snd_hda_codec_atihdmi
+amdxcp                 12288  1 amdgpu
+rtw88_8821c            98304  1 rtw88_8821ce
+drm_panel_backlight_quirks    12288  1 amdgpu
+intel_rapl_msr         20480  0
+intel_rapl_common      53248  1 intel_rapl_msr
+gpu_sched              65536  1 amdgpu
+snd_usbmidi_lib        57344  1 snd_usb_audio
+rtw88_pci              36864  1 rtw88_8821ce
+snd_intel_dspcfg       45056  1 snd_hda_intel
+drm_buddy              28672  1 amdgpu
+snd_intel_sdw_acpi     16384  1 snd_intel_dspcfg
+ee1004                 16384  0
+drm_ttm_helper         16384  1 amdgpu
+snd_hwdep              24576  2 snd_usb_audio,snd_hda_codec
+snd_ump                45056  1 snd_usb_audio
+rtw88_core            360448  2 rtw88_pci,rtw88_8821c
+ttm                   126976  2 amdgpu,drm_ttm_helper
+snd_seq_midi           24576  0
+snd_seq_midi_event     16384  1 snd_seq_midi
+drm_exec               12288  1 amdgpu
+snd_rawmidi            57344  3 snd_seq_midi,snd_usbmidi_lib,snd_ump
+snd_seq               122880  9 snd_seq_midi,snd_seq_midi_event,snd_seq_dummy
+drm_suballoc_helper    24576  1 amdgpu
+edac_mce_amd           28672  0
+btusb                  77824  0
+mac80211             1851392  2 rtw88_pci,rtw88_core
+snd_pcm               200704  5 snd_hda_codec_hdmi,snd_hda_intel,snd_usb_audio,snd_hda_codec,snd_hda_core
+polyval_clmulni        12288  0
+mfd_aaeon              12288  0
+eeepc_wmi              12288  0
+btrtl                  32768  1 btusb
+drm_display_helper    290816  1 amdgpu
+ghash_clmulni_intel    12288  0
+snd_seq_device         16384  4 snd_seq,snd_seq_midi,snd_ump,snd_rawmidi
+btintel                69632  1 btusb
+aesni_intel            98304  8
+asus_wmi              102400  2 eeepc_wmi,mfd_aaeon
+btbcm                  24576  1 btusb
+cec                    98304  2 drm_display_helper,amdgpu
+snd_timer              53248  3 snd_seq,snd_hrtimer,snd_pcm
+sparse_keymap          12288  1 asus_wmi
+rc_core                73728  1 cec
+i2c_piix4              32768  0
+btmtk                  36864  1 btusb
+rapl                   20480  0
+i2c_algo_bit           16384  1 amdgpu
+platform_profile       20480  1 asus_wmi
+wmi_bmof               12288  0
+k10temp                16384  0
+i2c_smbus              20480  1 i2c_piix4
+mc                     81920  1 snd_usb_audio
+cfg80211             1462272  2 rtw88_core,mac80211
+snd                   143360  22 snd_hda_codec_generic,snd_seq,snd_seq_device,snd_hda_codec_hdmi,snd_hwdep,snd_hda_intel,snd_usb_audio,snd_usbmidi_lib,snd_hda_codec,snd_timer,snd_hda_codec_realtek_lib,snd_ump,snd_pcm,snd_rawmidi
+video                  77824  2 asus_wmi,amdgpu
+bluetooth            1032192  34 btrtl,btmtk,btintel,btbcm,bnep,btusb,rfcomm
+ccp                   159744  0
+libarc4                12288  1 mac80211
+soundcore              16384  1 snd
+input_leds             12288  0
+joydev                 32768  0
+gpio_amdpt             16384  0
+mac_hid                12288  0
+sch_fq_codel           24576  2
+msr                    12288  0
+parport_pc             53248  0
+ppdev                  24576  0
+lp                     32768  0
+parport                73728  3 parport_pc,lp,ppdev
+nvme_fabrics           36864  0
+efi_pstore             12288  0
+nfnetlink              20480  5 nft_compat,nf_tables,ip_set
+dmi_sysfs              20480  0
+ip_tables              32768  0
+x_tables               65536  6 xt_conntrack,nft_compat,xt_addrtype,xt_set,ip_tables,xt_MASQUERADE
+autofs4                57344  2
+hid_generic            12288  0
+usbhid                 77824  0
+hid                   262144  2 usbhid,hid_generic
+nvme                   61440  2
+nvme_core             233472  4 nvme,nvme_fabrics
+r8169                 139264  0
+ahci                   49152  0
+nvme_keyring           20480  2 nvme_core,nvme_fabrics
+realtek                49152  1
+nvme_auth              28672  1 nvme_core
+libahci                53248  1 ahci
+wmi                    28672  4 video,asus_wmi,wmi_bmof,mfd_aaeon

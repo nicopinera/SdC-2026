@@ -1,0 +1,110 @@
+Module                  Size  Used by
+mptcp_diag             16384  0
+xsk_diag               12288  0
+tcp_diag               12288  0
+udp_diag               12288  0
+raw_diag               12288  0
+snd_seq_dummy          12288  0
+inet_diag              32768  4 tcp_diag,mptcp_diag,raw_diag,udp_diag
+snd_hrtimer            12288  1
+unix_diag              12288  0
+af_packet_diag         12288  0
+netlink_diag           12288  0
+overlay               225280  0
+ipmi_devintf           20480  0
+ipmi_msghandler        98304  1 ipmi_devintf
+binfmt_misc            24576  1
+nls_iso8859_1          12288  1
+amd_atl                73728  1
+intel_rapl_msr         20480  0
+intel_rapl_common      57344  1 intel_rapl_msr
+amdgpu              20406272  46
+snd_hda_codec_alc662    20480  1
+snd_hda_codec_realtek_lib    65536  1 snd_hda_codec_alc662
+snd_hda_codec_generic   126976  2 snd_hda_codec_alc662,snd_hda_codec_realtek_lib
+snd_hda_codec_atihdmi    24576  2
+snd_hda_codec_hdmi     65536  1 snd_hda_codec_atihdmi
+snd_hda_intel          61440  3
+edac_mce_amd           28672  0
+snd_hda_codec         204800  6 snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec_alc662,snd_hda_codec_realtek_lib,snd_hda_codec_atihdmi
+snd_usb_audio         593920  3
+snd_hda_core          151552  7 snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec_alc662,snd_hda_codec,snd_hda_codec_realtek_lib,snd_hda_codec_atihdmi
+kvm_amd               249856  0
+snd_intel_dspcfg       45056  1 snd_hda_intel
+snd_usbmidi_lib        57344  1 snd_usb_audio
+snd_intel_sdw_acpi     16384  1 snd_intel_dspcfg
+snd_ump                49152  1 snd_usb_audio
+kvm                  1470464  1 kvm_amd
+snd_hwdep              24576  2 snd_usb_audio,snd_hda_codec
+amdxcp                 12288  1 amdgpu
+drm_panel_backlight_quirks    12288  1 amdgpu
+irqbypass              16384  1 kvm
+snd_pcm               208896  5 snd_hda_codec_hdmi,snd_hda_intel,snd_usb_audio,snd_hda_codec,snd_hda_core
+drm_buddy              28672  1 amdgpu
+drm_ttm_helper         16384  1 amdgpu
+polyval_clmulni        12288  0
+snd_seq_midi           24576  0
+uvcvideo              147456  0
+ghash_clmulni_intel    12288  0
+ttm                   131072  2 amdgpu,drm_ttm_helper
+snd_seq_midi_event     16384  1 snd_seq_midi
+videobuf2_vmalloc      20480  1 uvcvideo
+aesni_intel            94208  0
+drm_exec               12288  1 amdgpu
+snd_rawmidi            57344  3 snd_seq_midi,snd_usbmidi_lib,snd_ump
+rapl                   20480  0
+uvc                    12288  1 uvcvideo
+drm_suballoc_helper    24576  1 amdgpu
+videobuf2_memops       16384  1 videobuf2_vmalloc
+snd_seq               122880  9 snd_seq_midi,snd_seq_midi_event,snd_seq_dummy
+videobuf2_v4l2         36864  1 uvcvideo
+drm_display_helper    294912  1 amdgpu
+snd_seq_device         16384  4 snd_seq,snd_seq_midi,snd_ump,snd_rawmidi
+spd5118                16384  0
+videobuf2_common       90112  4 videobuf2_vmalloc,videobuf2_v4l2,uvcvideo,videobuf2_memops
+cec                   106496  2 drm_display_helper,amdgpu
+snd_timer              53248  3 snd_seq,snd_hrtimer,snd_pcm
+videodev              372736  2 videobuf2_v4l2,uvcvideo
+rc_core                73728  1 cec
+amdxdna               151552  0
+i2c_algo_bit           16384  1 amdgpu
+snd                   147456  28 snd_hda_codec_generic,snd_seq,snd_seq_device,snd_hda_codec_hdmi,snd_hwdep,snd_hda_intel,snd_usb_audio,snd_usbmidi_lib,snd_hda_codec,snd_timer,snd_hda_codec_realtek_lib,snd_ump,snd_pcm,snd_rawmidi
+ccp                   159744  1 kvm_amd
+i2c_piix4              32768  0
+mc                     86016  5 videodev,snd_usb_audio,videobuf2_v4l2,uvcvideo,videobuf2_common
+wmi_bmof               12288  0
+k10temp                16384  0
+i2c_smbus              20480  1 i2c_piix4
+soundcore              16384  1 snd
+gpu_sched              65536  2 amdxdna,amdgpu
+joydev                 32768  0
+input_leds             12288  0
+gpio_amdpt             16384  0
+mac_hid                12288  0
+sch_fq_codel           24576  2
+msr                    12288  0
+parport_pc             53248  0
+nvme_fabrics           36864  0
+ppdev                  24576  0
+nvme_core             241664  1 nvme_fabrics
+lp                     32768  0
+nvme_keyring           20480  2 nvme_core,nvme_fabrics
+parport                73728  3 parport_pc,lp,ppdev
+nvme_auth              28672  1 nvme_core
+efi_pstore             12288  0
+nfnetlink              20480  1
+dmi_sysfs              24576  0
+ip_tables              36864  0
+x_tables               65536  1 ip_tables
+autofs4                57344  2
+hid_generic            12288  0
+usbhid                 77824  0
+hid                   270336  2 usbhid,hid_generic
+r8169                 143360  0
+psmouse               225280  0
+ahci                   49152  3
+serio_raw              20480  0
+realtek                49152  1
+libahci                57344  1 ahci
+video                  77824  1 amdgpu
+wmi                    28672  2 video,wmi_bmof
