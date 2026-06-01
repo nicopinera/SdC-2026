@@ -92,5 +92,5 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"ok")
 
-print("Servidor corriendo en http://localhost:8080")
-HTTPServer(("", 8080), Handler).serve_forever()
+print("Servidor corriendo en http://localhost:9090")
+HTTPServer(("", 9090), Handler).serve_forever()
