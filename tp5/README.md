@@ -47,4 +47,8 @@ En este trabajo práctico se desarrolla el diseño y la construcción de un CDD 
 - Headers del kernel de la Raspberry Pi (versión específica)
 - `make`, `ssh`, `scp`
 
+## Pendientes
+Escribir el driver cdd.c — el módulo de kernel real
+Escribir el Makefile — para cross-compilar hacia la Raspberry
+Completar el README
 ## Conclusión
