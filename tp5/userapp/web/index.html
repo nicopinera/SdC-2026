@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CDD — Visualizador de señales</title>
+
+  <!--
+    Chart.js: librería para graficar los datos de la señal.
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body    { font-family: sans-serif; background:#111; color:#eee; padding:20px; }
+    canvas  { background:#1e1e1e; border-radius:8px; }
+    button  { margin:5px; padding:10px 20px; font-size:1em; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h2>📡 Monitor de señales — CDD</h2>
+
+  <!-- Muestra qué señal está activa en este momento -->
+  <div>Señal activa: <strong id="sig-label">—</strong></div>
+  <br>
+
+  <!--
+    Botones para cambiar de señal.
+    Al hacer click llaman a setSignal(n) que avisa al servidor
+    y resetea el gráfico.
+  -->
+  <button onclick="setSignal(1)">📶 Señal 1 — Temperatura (°C)</button>
+  <button onclick="setSignal(2)">📶 Señal 2 — Presión (hPa)</button>
+  <br><br>
+
+  <!-- Canvas donde se dibuja el gráfico -->
+  <canvas id="chart" width="800" height="400"></canvas>
+
+  <script>
+    // Metadatos de cada señal: nombre y unidad de medición.
+    // Usados para etiquetar el gráfico correctamente.
+
+    const SIGNAL_INFO = {
+      1: { label: 'Temperatura', unit: '°C'  },
+      2: { label: 'Presión',     unit: 'hPa' }
+    };
+
+    // Inicialización del gráfico con Chart.js
+    const ctx = document.getElementById('chart').getContext('2d');
+    let chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],       // timestamps formateados (eje X)
+        datasets: [{
+          label: 'Señal',
+          data: [],       // valores numéricos (eje Y)
+          borderColor: '#00e5ff',
+          backgroundColor: 'rgba(0,229,255,0.1)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        animation: false, // desactivado para no interferir con la actualización continua
+        scales: {
+          x: { title: { display:true, text:'Tiempo', color:'#aaa' } },
+          y: { title: { display:true, text:'Valor',  color:'#aaa' } }
+        }
+      }
+    });
+
+    // setSignal(n): cambia la señal activa
+    // Resetea los datos del gráfico para empezar desde cero
+    function setSignal(n) {
+      fetch('/select?signal=' + n).then(() => {
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.update();
+      });
+    }
+
+    // fetchData(): consulta los datos actuales al servidor
+    // Actualiza etiquetas, unidades y puntos del gráfico
+    function fetchData() {
+      fetch('/data')
+        .then(r => r.json())
+        .then(json => {
+          // Actualizar etiqueta de señal activa con nombre y unidad
+          const info = SIGNAL_INFO[json.signal] || { label:'Señal', unit:'' };
+          document.getElementById('sig-label').textContent =
+            info.label + ' (' + info.unit + ')';
+
+          // Actualizar título del dataset y unidad del eje Y
+          chart.data.datasets[0].label       = info.label + ' [' + info.unit + ']';
+          chart.options.scales.y.title.text   = info.unit;
+
+          // Cargar timestamps en eje X y valores en eje Y
+          chart.data.labels              = json.data.map(p =>
+            new Date(p.t * 1000).toLocaleTimeString());
+          chart.data.datasets[0].data    = json.data.map(p => p.v);
+
+          chart.update();
+        });
+    }
+
+    // Actualizar el gráfico cada 1 segundo
+    setInterval(fetchData, 1000);
+
+    // Primera llamada inmediata al cargar la página
+    fetchData();
+  </script>
+</body>
+</html>
