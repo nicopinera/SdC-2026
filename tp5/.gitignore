@@ -1,0 +1,13 @@
+# Sistema Linux generado por Buildroot
+Image
+rootfs.img
+buildroot-2024.02/
+
+# Artefactos de compilación del módulo
+driver/*.ko
+driver/*.mod
+driver/*.mod.c
+driver/*.o
+driver/.*.cmd
+driver/modules.order
+driver/Module.symvers
